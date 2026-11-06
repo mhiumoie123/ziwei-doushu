@@ -107,15 +107,13 @@ export async function POST(req: Request) {
 
     // 1. NATIVE GEMINI STREAMING (Ưu tiên số 1 nếu có GEMINI_API_KEY)
     if (geminiKey) {
-      // Danh sách các model để thử, nếu một model bận (503) hoặc không hỗ trợ sẽ tự động thử model kế tiếp
+      // Danh sách các model đang hoạt động chuẩn 2026 của Google
       const candidateModels = [
         process.env.GEMINI_MODEL,
-        'gemini-2.0-flash',
-        'gemini-1.5-flash',
-        'gemini-2.0-flash-lite',
-        'gemini-flash-latest',
-        'gemini-2.5-flash',
+        'gemini-3.5-flash-lite',
         'gemini-3.8-flash',
+        'gemini-3-flash',
+        'gemini-flash-latest',
       ].filter(Boolean) as string[];
 
       // Chuẩn bị contents theo chuẩn Gemini REST API
@@ -131,78 +129,109 @@ export async function POST(req: Request) {
 
       let lastErrorText = '';
       for (const model of candidateModels) {
-        try {
-          const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?key=${geminiKey}&alt=sse`;
-          const response = await fetch(geminiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              systemInstruction: { parts: [{ text: systemPrompt }] },
-              contents,
-              generationConfig: {
-                temperature: 0.7,
-                maxOutputTokens: 2048,
-              },
-            }),
-          });
+        // Thử tối đa 2 lần cho mỗi model nếu gặp 503 (quá tải đột xuất)
+        for (let attempt = 0; attempt < 2; attempt++) {
+          try {
+            const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?key=${geminiKey}&alt=sse`;
+            const response = await fetch(geminiUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                contents,
+                generationConfig: {
+                  temperature: 0.7,
+                  maxOutputTokens: 2048,
+                },
+              }),
+            });
 
-          if (!response.ok || !response.body) {
-            lastErrorText = await response.text();
-            console.warn(`Gemini model ${model} failed (${response.status}):`, lastErrorText);
-            continue; // Thử model tiếp theo
-          }
-
-          // Kết nối thành công, đọc SSE từ Gemini và map sang định dạng client
-          const reader = response.body.getReader();
-          const decoder = new TextDecoder();
-
-          const stream = new ReadableStream({
-            async start(controller) {
-              let buffer = '';
-              try {
-                while (true) {
-                  const { done, value } = await reader.read();
-                  if (done) break;
-                  buffer += decoder.decode(value, { stream: true });
-                  const lines = buffer.split('\n');
-                  buffer = lines.pop() ?? '';
-                  for (const line of lines) {
-                    const trimmed = line.trim();
-                    if (!trimmed.startsWith('data: ')) continue;
-                    const jsonStr = trimmed.slice(6).trim();
-                    if (!jsonStr) continue;
-                    try {
-                      const data = JSON.parse(jsonStr);
-                      const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
-                      if (text) {
-                        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ delta: { text } })}\n\n`));
-                      }
-                    } catch {}
-                  }
-                }
-                controller.enqueue(encoder.encode(`data: [DONE]\n\n`));
-              } catch (err) {
-                controller.error(err);
-              } finally {
-                controller.close();
+            if (!response.ok || !response.body) {
+              lastErrorText = await response.text();
+              console.warn(`Gemini model ${model} (attempt ${attempt + 1}) failed (${response.status}):`, lastErrorText);
+              if (response.status === 503 && attempt === 0) {
+                // Đợi 1 giây rồi thử lại model này
+                await new Promise(r => setTimeout(r, 1000));
+                continue;
               }
-            },
-          });
+              break; // Chuyển sang model tiếp theo
+            }
 
-          return new Response(stream, {
-            headers: {
-              'Content-Type': 'text/event-stream',
-              'Cache-Control': 'no-cache',
-              'Connection': 'keep-alive',
-            },
-          });
-        } catch (e: any) {
-          lastErrorText = e.message;
+            // Kết nối thành công, đọc SSE từ Gemini và map sang định dạng client
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+
+            const stream = new ReadableStream({
+              async start(controller) {
+                let buffer = '';
+                try {
+                  while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop() ?? '';
+                    for (const line of lines) {
+                      const trimmed = line.trim();
+                      if (!trimmed.startsWith('data: ')) continue;
+                      const jsonStr = trimmed.slice(6).trim();
+                      if (!jsonStr) continue;
+                      try {
+                        const data = JSON.parse(jsonStr);
+                        const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+                        if (text) {
+                          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ delta: { text } })}\n\n`));
+                        }
+                      } catch {}
+                    }
+                  }
+                  controller.enqueue(encoder.encode(`data: [DONE]\n\n`));
+                } catch (err) {
+                  controller.error(err);
+                } finally {
+                  controller.close();
+                }
+              },
+            });
+
+            return new Response(stream, {
+              headers: {
+                'Content-Type': 'text/event-stream',
+                'Cache-Control': 'no-cache',
+                'Connection': 'keep-alive',
+              },
+            });
+          } catch (e: any) {
+            lastErrorText = e.message;
+            break;
+          }
         }
       }
 
       console.error('All Gemini models failed:', lastErrorText);
-      // Nếu tất cả model native đều gặp lỗi, fallback sang OpenAI format bên dưới
+
+      // Nếu chỉ có Gemini Key mà không có OpenAI/DeepSeek key thì trả về thông báo thân thiện
+      if (!deepseekKey && !openaiKey && !aiKey) {
+        const retryNotice = `**【Máy Chủ Google Gemini Đang Bận】**\n\n` +
+          `Hệ thống Google Gemini đang trong khung giờ cao điểm chịu tải cao (503). ` +
+          `Lá số của bạn đã được lưu trữ, bạn vui lòng nhấn nút **"Hỏi tiếp"** hoặc bấm lại chủ đề luận giải sau ít giây nhé!`;
+
+        const readable = new ReadableStream({
+          start(controller) {
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ delta: { text: retryNotice } })}\n\n`));
+            controller.enqueue(encoder.encode(`data: [DONE]\n\n`));
+            controller.close();
+          },
+        });
+
+        return new Response(readable, {
+          headers: {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+          },
+        });
+      }
     }
 
     // 2. OPENAI COMPATIBLE PROVIDERS (DeepSeek / OpenAI / Groq / OpenAI Compatible)
