@@ -10,9 +10,6 @@ export interface BirthInfo {
   longitude?: number;  // 出生地经度（用于真太阳时校正）
   /**
    * 原始输入（用户在表单里实际填的时间），已知出生时间时始终保留。
-   * 例：用户输入 5/9 23:55 → year/month/day 会被改成 5/10（次日子时），
-   *     而这里保存原始的 { year:Y, month:5, day:9, clockHour:23, clockMinute:55 }，
-   *     用于在 chart 页让用户看见"已为你按子时换日规则归到次日"。
    */
   origInput?: {
     year: number;
@@ -32,7 +29,7 @@ export interface LunarInfo {
   isLeapMonth: boolean;
   /** 节气四柱（年/月/日/时柱），如 ["壬午","壬子","壬戌","庚戌"] */
   fourPillars?: [string, string, string, string];
-  /** 非节气四柱（农历口径：正月初一换年 + 农历月，与紫微同历法）——节气交界日其月柱会与 fourPillars 不同 */
+  /** 非节气四柱（农历口径：正月初一换年 + 农历月，与紫微同历法） */
   fourPillarsLunar?: [string, string, string, string];
 }
 
@@ -43,12 +40,15 @@ export type StarBrightness = '庙' | '旺' | '得' | '利' | '平' | '不' | '�
 
 export interface Star {
   name: string;
+  nameVi?: string;
   type: 'major' | 'minor' | 'lucky' | 'sha';
   siHua?: SiHua;
+  siHuaVi?: string;
   /** 粗粒度亮度（保留向后兼容，算法判断用） */
   brightness?: 'bright' | 'normal' | 'dim';
   /** 原始 7 档亮度（庙/旺/得/利/平/不/陷）—— 显示层使用 */
   brightnessRaw?: StarBrightness;
+  brightnessVi?: string;
 }
 
 export interface SelfSihuaMark {
@@ -60,6 +60,7 @@ export interface Palace {
   branch: number;      // 0-11 (地支索引)
   stem: number;        // 0-9 (天干索引)
   name: string;        // 宫名
+  nameVi?: string;
   stars: Star[];
   daXianAge?: [number, number];   // 大限年龄段
   isCurrentDaXian?: boolean;
@@ -75,8 +76,10 @@ export interface Palace {
   borrowedFromBranch?: number;
   /** 若为空宫，借自哪个宫名 */
   borrowedFromName?: string;
+  borrowedFromNameVi?: string;
   /** 若为空宫，借到的对宫主星名列表（结构化数据，文案层不再需要从文本反查） */
   borrowedStars?: string[];
+  borrowedStarsVi?: string[];
 }
 
 export interface DaXianSiHua {
@@ -93,8 +96,10 @@ export interface DaXian {
   endAge: number;
   palaceBranch: number;
   palaceName: string;
+  palaceNameVi?: string;
   stemIndex?: number;    // 大限宫的天干索引（用于大限四化）
   stemName?: string;
+  stemNameVi?: string;
   siHua?: DaXianSiHua;   // 该大限四化（基于宫干）
 }
 
@@ -105,6 +110,7 @@ export interface ZiweiChart {
   shenGongBranch: number;    // 身宫地支
   wuxingJu: number;          // 五行局 (2,3,4,5,6)
   wuxingJuName: string;      // e.g. '水二局'
+  wuxingJuNameVi?: string;
   ziweiPos: number;          // 紫微星位置
   palaces: Palace[];         // 12宫，按地支0-11排序
   daXians: DaXian[];
@@ -114,8 +120,11 @@ export interface ZiweiChart {
   analysisCacheProfile?: string;
   /** 命主星（按命宫地支查表） */
   mingZhu?: string;
+  mingZhuVi?: string;
   /** 身主星（按生年地支查表） */
   shenZhu?: string;
+  shenZhuVi?: string;
   /** 阴阳性别（阳男/阴男/阳女/阴女） */
   yinYangGender?: string;
+  yinYangGenderVi?: string;
 }

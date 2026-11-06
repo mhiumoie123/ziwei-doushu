@@ -1,7 +1,14 @@
 'use client';
 import { motion } from 'framer-motion';
 import type { Palace, Star } from '@/lib/ziwei/types';
-import { STEMS, BRANCHES } from '@/lib/ziwei/constants';
+import {
+  translateStarName,
+  translatePalaceName,
+  translateSiHua,
+  translateBrightness,
+  translateStem,
+  translateBranch,
+} from '@/lib/ziwei/vietnamese';
 import clsx from 'clsx';
 
 interface PalaceCellProps {
@@ -24,6 +31,10 @@ const SIHUA_STYLES: Record<string, string> = {
   '权': 'text-blue-400 bg-blue-500/10 border-blue-500/30',
   '科': 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30',
   '忌': 'text-red-400 bg-red-500/10 border-red-500/30',
+  'Lộc': 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
+  'Quyền': 'text-blue-400 bg-blue-500/10 border-blue-500/30',
+  'Khoa': 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30',
+  'Kỵ': 'text-red-400 bg-red-500/10 border-red-500/30',
 };
 
 const SiHuaBadge = ({
@@ -37,18 +48,20 @@ const SiHuaBadge = ({
   label?: string;
   onClick?: (e: React.MouseEvent) => void;
 }) => {
+  const shortVi = translateSiHua(siHua, true) || siHua;
+  const viLabel = label === '限' ? 'Hạn' : label === '年' ? 'Niên' : label;
   return (
     <span
       className={clsx(
         'inline-flex items-center text-[8px] px-1 rounded-full border leading-none py-px font-bold ml-1 flex-shrink-0',
-        SIHUA_STYLES[siHua],
+        SIHUA_STYLES[siHua] || SIHUA_STYLES[shortVi] || 'text-amber-400 bg-amber-500/10 border-amber-500/30',
         overlay && 'border-dashed opacity-80',
         onClick && 'cursor-pointer hover:opacity-100',
       )}
       onClick={onClick}
     >
-      {overlay && label && <span className="mr-px opacity-70">{label}</span>}
-      {siHua}
+      {overlay && viLabel && <span className="mr-px opacity-70">{viLabel}</span>}
+      {shortVi}
     </span>
   );
 };
@@ -57,8 +70,9 @@ export default function PalaceCell({
   palace, onClick, onStarClick, isSelected, isSanFang, delay = 0,
   overlayStarSiHua, overlayLabel, onSiHuaClick,
 }: PalaceCellProps) {
-  const { branch, stem, name, stars, daXianAge, isCurrentDaXian, isMingGong, isShenGong } = palace;
-  const ganzhi = `${STEMS[stem]}${BRANCHES[branch]}`;
+  const { branch, stem, name, nameVi, stars, daXianAge, isCurrentDaXian, isMingGong, isShenGong } = palace;
+  const ganzhi = `${translateStem(stem)} ${translateBranch(branch)}`;
+  const displayPalaceName = nameVi || translatePalaceName(name);
 
   const majorStars = stars.filter(s => s.type === 'major');
   const luckyStars = stars.filter(s => s.type === 'lucky');
@@ -91,7 +105,7 @@ export default function PalaceCell({
           : 'none',
       }}
     >
-      {/* 大限年龄 */}
+      {/* Đại hạn tuổi */}
       {daXianAge && (
         <div className={clsx(
           'absolute top-1 right-1 text-[9px] font-mono tabular-nums',
@@ -103,33 +117,35 @@ export default function PalaceCell({
         </div>
       )}
 
-      {/* 宫名行 */}
+      {/* Tên cung */}
       <div className="flex items-center gap-1 mb-0.5 pr-8">
         <span className={clsx('text-[10px] font-medium tracking-wide',
-          isMingGong ? 'text-amber-500' : isShenGong ? 'text-sky-500' : ''
+          isMingGong ? 'text-amber-500 font-bold' : isShenGong ? 'text-sky-500 font-semibold' : ''
         )}
           style={!isMingGong && !isShenGong ? { color: 'var(--t-faint)' } : undefined}
         >
-          {name}
+          {displayPalaceName}
         </span>
         {isMingGong && (
-          <span className="text-[7px] text-amber-500/80 border border-amber-500/30 px-0.5 rounded leading-tight">命</span>
+          <span className="text-[7px] text-amber-500/80 border border-amber-500/30 px-0.5 rounded leading-tight font-bold">MỆNH</span>
         )}
         {isShenGong && (
-          <span className="text-[7px] text-sky-500/80 border border-sky-500/30 px-0.5 rounded leading-tight">身</span>
+          <span className="text-[7px] text-sky-500/80 border border-sky-500/30 px-0.5 rounded leading-tight font-bold">THÂN</span>
         )}
       </div>
 
-      {/* 干支 */}
+      {/* Can Chi cung vị */}
       <div className="text-[9px] font-mono mb-1" style={{ color: 'var(--t-faint)', opacity: 0.75 }}>{ganzhi}</div>
 
-      {/* 主星 */}
+      {/* Chính tinh (14 chủ tinh) */}
       <div className="flex flex-col gap-0.5 flex-1">
         {majorStars.length === 0 && (
-          <span className="text-[10px] italic" style={{ color: 'var(--t-faint)', opacity: 0.6 }}>空宫</span>
+          <span className="text-[10px] italic font-medium" style={{ color: 'var(--t-faint)', opacity: 0.6 }}>Vô Chính Diệu</span>
         )}
         {majorStars.map((star) => {
           const overlaySiHua = overlayStarSiHua?.[star.name];
+          const starDisplay = star.nameVi || translateStarName(star.name);
+          const brightVi = star.brightnessVi || translateBrightness(star.brightnessRaw);
           return (
             <div
               key={star.name}
@@ -140,8 +156,13 @@ export default function PalaceCell({
                 'text-[13px] leading-tight font-bold tracking-tight cursor-pointer hover:brightness-125 transition-all',
                 star.brightness === 'bright' ? 'text-amber-300' : star.brightness === 'dim' ? 'text-amber-700/80' : 'text-amber-500',
               )}>
-                {star.name}
+                {starDisplay}
               </span>
+              {brightVi && (
+                <span className="text-[9px] ml-0.5 opacity-75 font-serif" style={{ color: 'var(--t-faint)' }}>
+                  ({brightVi})
+                </span>
+              )}
               {star.siHua && <SiHuaBadge siHua={star.siHua} />}
               {overlaySiHua && (
                 <SiHuaBadge
@@ -159,14 +180,15 @@ export default function PalaceCell({
         })}
       </div>
 
-      {/* 吉星 */}
+      {/* Cát tinh (Phụ tinh tốt) */}
       {luckyStars.length > 0 && (
         <div className="flex flex-wrap gap-x-1 mt-0.5">
           {luckyStars.map(s => {
             const overlaySiHua = overlayStarSiHua?.[s.name];
+            const starDisplay = s.nameVi || translateStarName(s.name);
             return (
               <span key={s.name} className="inline-flex items-center text-[9px] text-sky-500/70 leading-tight">
-                {s.name}
+                {starDisplay}
                 {s.siHua && <SiHuaBadge siHua={s.siHua} />}
                 {overlaySiHua && (
                   <SiHuaBadge
@@ -185,14 +207,17 @@ export default function PalaceCell({
         </div>
       )}
 
-      {/* 煞星 */}
+      {/* Sát tinh (Hỏa, Linh, Kình, Đà, Không, Kiếp...) */}
       {shaStars.length > 0 && (
         <div className="flex flex-wrap gap-x-1">
-          {shaStars.map(s => (
-            <span key={s.name} className="text-[9px] text-red-500/60 leading-tight">
-              {s.name}{s.siHua && <SiHuaBadge siHua={s.siHua} />}
-            </span>
-          ))}
+          {shaStars.map(s => {
+            const starDisplay = s.nameVi || translateStarName(s.name);
+            return (
+              <span key={s.name} className="text-[9px] text-red-500/60 leading-tight">
+                {starDisplay}{s.siHua && <SiHuaBadge siHua={s.siHua} />}
+              </span>
+            );
+          })}
         </div>
       )}
 

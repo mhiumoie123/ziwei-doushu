@@ -10,6 +10,7 @@ import { BRANCHES, STEMS } from './constants';
 import { schoolStarBrightness, type BrightnessSchool } from './school-data';
 import { SCHOOL_AX } from './school-tables.generated';
 import { DEFAULT_LEAP_MONTH } from './school-config';
+import { translateStarName, translatePalaceName, translateSiHua, translateBrightness, translateJu } from './vietnamese';
 // 飞星派工具仅供导出，不再在排盘时调用（倪师《天纪 03》：四化星永远固定不动）
 // import { detectSelfSihua, getSiHuaByStem } from './sihua';
 
@@ -561,7 +562,7 @@ export function generateChart(
     //   年支大耗不走岁前12神（iztro 岁前大耗=岁破，默认口径不是），见 applySchoolDahao。
     for (const sname of [p.suiqian12, p.jiangqian12] as (string | undefined)[]) {
       if (sname === '劫煞' || sname === '龙德') {
-        allStars.push({ name: sname, type: mapStarType(sname, '') });
+        allStars.push({ name: sname, nameVi: translateStarName(sname), type: mapStarType(sname, '') });
       }
     }
 

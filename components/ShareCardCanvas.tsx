@@ -9,6 +9,7 @@
 
 import type { ZiweiChart } from '@/lib/ziwei/types';
 import { SITE_HOST } from '@/lib/site';
+import { translateStarName, translatePalaceName, translateJu, translateBranch, translateSiHua } from '@/lib/ziwei/vietnamese';
 
 const BRANCH_NAMES = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
 
@@ -40,10 +41,10 @@ interface ShareCardProps {
 
 export default function ShareCardCanvas({ chart, birth, highlight }: ShareCardProps) {
   const mingPalace = chart.palaces.find(p => p.branch === chart.mingGongBranch);
-  const mingMajorStars = mingPalace?.stars.filter(s => s.type === 'major').map(s => s.name) ?? [];
-  const mingStarStr = mingMajorStars.length > 0 ? mingMajorStars.join('·') : '空宫';
-  const mingBranchName = BRANCH_NAMES[chart.mingGongBranch] || '';
-  const shenBranchName = BRANCH_NAMES[chart.shenGongBranch] || '';
+  const mingMajorStars = mingPalace?.stars.filter(s => s.type === 'major').map(s => translateStarName(s.name)) ?? [];
+  const mingStarStr = mingMajorStars.length > 0 ? mingMajorStars.join(' · ') : 'Vô Chính Diệu';
+  const mingBranchName = translateBranch(chart.mingGongBranch) || '';
+  const shenBranchName = translateBranch(chart.shenGongBranch) || '';
   const dx = chart.daXians?.[chart.currentDaXianIndex];
 
   // 把每个宫位组织成 12 个格子，按布局画
@@ -92,15 +93,15 @@ export default function ShareCardCanvas({ chart, birth, highlight }: ShareCardPr
             color: 'white', fontSize: '15px', fontWeight: 700,
           }}>紫</div>
           <div>
-            <div style={{ fontSize: '15px', color: '#3d2f10', fontWeight: 600, letterSpacing: '0.12em', lineHeight: 1.2 }}>紫微命盘</div>
-            <div style={{ fontSize: '9px', color: '#a89b7c', letterSpacing: '0.18em', marginTop: '2px' }}>倪海厦正宗 · ZI WEI</div>
+            <div style={{ fontSize: '15px', color: '#3d2f10', fontWeight: 600, letterSpacing: '0.08em', lineHeight: 1.2 }}>Lá Số Tử Vi</div>
+            <div style={{ fontSize: '9px', color: '#a89b7c', letterSpacing: '0.18em', marginTop: '2px' }}>Tử Vi Đẩu Số Chính Tông</div>
           </div>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
           <div style={{ fontSize: '10px', color: '#6b5d3f', letterSpacing: '0.05em' }}>
-            {birth.year}年{birth.month}月{birth.day}日 · {birth.hour.padStart(2,'0')}:{birth.minute.padStart(2,'0')}
+            Ngày {birth.day}/{birth.month}/{birth.year} · {birth.hour.padStart(2,'0')}:{birth.minute.padStart(2,'0')}
             <span style={{ margin: '0 4px', color: '#b8922a' }}>·</span>
-            {birth.gender === 'male' ? '男命' : '女命'}
+            {birth.gender === 'male' ? 'Nam mệnh' : 'Nữ mệnh'}
             {birth.city && <><span style={{ margin: '0 4px', color: '#b8922a' }}>·</span>{birth.city}</>}
           </div>
           <div style={{ fontSize: '8px', color: '#b8922a', letterSpacing: '0.08em', marginTop: '2px' }}>
@@ -153,10 +154,10 @@ export default function ShareCardCanvas({ chart, birth, highlight }: ShareCardPr
                   alignItems: 'center',
                 }}>
                   <span style={{ fontWeight: cell.isMing ? 700 : 400 }}>
-                    {cell.palace?.name || ''}
-                    {cell.isShen ? '·身' : ''}
+                    {translatePalaceName(cell.palace?.name || '')}
+                    {cell.isShen ? ' (Thân)' : ''}
                   </span>
-                  <span style={{ fontSize: '7px', opacity: 0.7 }}>{BRANCH_NAMES[cell.branch]}</span>
+                  <span style={{ fontSize: '7px', opacity: 0.7 }}>{translateBranch(cell.branch)}</span>
                 </div>
                 {/* 主星 */}
                 <div style={{
@@ -175,10 +176,10 @@ export default function ShareCardCanvas({ chart, birth, highlight }: ShareCardPr
                       letterSpacing: '0.02em',
                       lineHeight: 1.1,
                     }}>
-                      {s.name}{s.siHua ? <span style={{ fontSize: '8px', color: '#c45a2d', marginLeft: '1px' }}>{s.siHua}</span> : ''}
+                      {translateStarName(s.name)}{s.siHua ? <span style={{ fontSize: '8px', color: '#c45a2d', marginLeft: '2px' }}>{translateSiHua(s.siHua, true)}</span> : ''}
                     </div>
                   )) : (
-                    <div style={{ fontSize: '9px', color: '#a89b7c', fontStyle: 'italic' }}>空宫</div>
+                    <div style={{ fontSize: '8px', color: '#a89b7c', fontStyle: 'italic' }}>Vô Chính Diệu</div>
                   )}
                 </div>
               </div>
@@ -198,10 +199,10 @@ export default function ShareCardCanvas({ chart, birth, highlight }: ShareCardPr
             borderRadius: '4px',
           }}>
             <div style={{ fontSize: '8px', color: '#a89b7c', letterSpacing: '0.2em', marginBottom: '4px' }}>ZI WEI</div>
-            <div style={{ fontSize: '14px', color: '#3d2f10', fontWeight: 600, letterSpacing: '0.1em' }}>紫微斗数</div>
-            <div style={{ fontSize: '10px', color: '#6b5d3f', marginTop: '6px' }}>命宫 · {mingBranchName}</div>
-            <div style={{ fontSize: '10px', color: '#6b5d3f' }}>身宫 · {shenBranchName}</div>
-            <div style={{ fontSize: '10px', color: '#6b5d3f', marginTop: '4px', fontWeight: 600 }}>{chart.wuxingJuName}</div>
+            <div style={{ fontSize: '13px', color: '#3d2f10', fontWeight: 700, letterSpacing: '0.08em' }}>TỬ VI ĐẨU SỐ</div>
+            <div style={{ fontSize: '9px', color: '#6b5d3f', marginTop: '4px' }}>Mệnh tại {mingBranchName}</div>
+            <div style={{ fontSize: '9px', color: '#6b5d3f' }}>Thân tại {shenBranchName}</div>
+            <div style={{ fontSize: '9px', color: '#6b5d3f', marginTop: '4px', fontWeight: 600 }}>{chart.wuxingJuNameVi || translateJu(chart.wuxingJuName)}</div>
           </div>
         </div>
 
@@ -244,8 +245,8 @@ export default function ShareCardCanvas({ chart, birth, highlight }: ShareCardPr
                 marginBottom: '10px',
                 letterSpacing: '0.05em',
               }}>
-                <span style={{ color: '#a89b7c' }}>当前大限 </span>
-                <span style={{ fontWeight: 600 }}>{dx.startAge}–{dx.endAge} 岁 · {dx.palaceName}</span>
+                <span style={{ color: '#a89b7c' }}>Đại Hạn Hiện Tại: </span>
+                <span style={{ fontWeight: 600 }}>{dx.startAge}–{dx.endAge} tuổi · {dx.palaceNameVi || translatePalaceName(dx.palaceName)}</span>
               </div>
             )}
             <div style={{
@@ -255,13 +256,13 @@ export default function ShareCardCanvas({ chart, birth, highlight }: ShareCardPr
               borderRadius: '6px',
             }}>
               <div style={{ fontSize: '11px', color: '#3d2f10', fontWeight: 600, letterSpacing: '0.08em', lineHeight: 1.4 }}>
-                紫微为门 · 天地人为路
+                Tử Vi Áo Bí · Khai Thông Mệnh Vận
               </div>
               <div style={{ fontSize: '10px', color: '#8b6a14', fontWeight: 600, letterSpacing: '0.08em', lineHeight: 1.4, marginTop: '2px' }}>
-                倪海厦为师 · AI 答疑伴学
+                Cổ Thư Kinh Điển · Minh Triết Lý Số
               </div>
               <div style={{ fontSize: '8px', color: '#a89b7c', letterSpacing: '0.15em', marginTop: '4px' }}>
-                扫码起你的命盘 →
+                Tra cứu & Luận giải lá số →
               </div>
             </div>
           </div>

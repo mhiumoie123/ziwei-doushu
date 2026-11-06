@@ -9,7 +9,7 @@ import { ALL_BOOKS, TOTAL_PARAGRAPHS } from '@/lib/classics';
 import LibrarySearch from './LibrarySearch';
 
 export const metadata = {
-  title: '倪师方法论 · 古籍原典库 · 紫微斗数全集 / 全书 / 骨髓赋',
+  title: 'Phương Pháp Luận Nghê Sư · Kho Điển Tịch Cổ · 紫微斗数全集 / 全书 / 骨髓赋',
   description: '紫微斗数权威古籍全文检索：《紫微斗数全集》《紫微斗数全书》《骨髓赋》倪海厦《天纪》引证来源',
 };
 
@@ -20,13 +20,13 @@ export default function LibraryHomePage() {
       <div className="px-6 py-4 flex items-center justify-between"
         style={{ borderBottom: '1px solid rgba(184,146,42,0.15)', background: 'var(--bg-page)' }}>
         <Link href="/" style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.3em', textDecoration: 'none' }}>
-          ← 返回首页
+          ← Trang chủ
         </Link>
         <div style={{ fontSize: '12px', color: 'var(--tx-3)', letterSpacing: '0.3em' }}>
-          古籍原典库 · CLASSICS
+          KHO ĐIỂN TỊCH CỔ · CLASSICS
         </div>
         <Link href="/chart" style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.2em', textDecoration: 'none' }}>
-          起盘 →
+          Lập lá số →
         </Link>
       </div>
 
@@ -80,9 +80,9 @@ export default function LibraryHomePage() {
                 {book.intro}
               </div>
               <div style={{ display: 'flex', gap: '12px', fontSize: '11px', color: 'var(--tx-3)' }}>
-                <span>{book.chapters.length} 章节</span>
+                <span>{book.chapters.length} chương</span>
                 <span style={{ color: 'rgba(184,146,42,0.4)' }}>·</span>
-                <span>{book.chapters.reduce((s, c) => s + c.paragraphs.length, 0)} 段精华</span>
+                <span>{book.chapters.reduce((s, c) => s + c.paragraphs.length, 0)} đoạn tinh hoa</span>
               </div>
               <div style={{
                 display: 'inline-flex',
@@ -92,7 +92,7 @@ export default function LibraryHomePage() {
                 letterSpacing: '0.15em',
                 fontWeight: 500,
               }}>
-                进入查阅 →
+                Vào tra cứu →
               </div>
             </Link>
           ))}
@@ -101,7 +101,7 @@ export default function LibraryHomePage() {
         {/* 底部说明 */}
         <div style={{ marginTop: '60px', padding: '24px', background: 'rgba(184,146,42,0.05)', borderRadius: '10px', textAlign: 'center' }}>
           <div style={{ fontSize: '11px', color: 'var(--ac-dim)', fontWeight: 600, letterSpacing: '0.15em', marginBottom: '8px' }}>
-            关于本库
+            Về kho điển tịch này
           </div>
           <div style={{ fontSize: '12px', color: 'var(--tx-2)', lineHeight: 1.8, maxWidth: '600px', margin: '0 auto' }}>
             所收录古籍均为公版（明代刊本）。<br />

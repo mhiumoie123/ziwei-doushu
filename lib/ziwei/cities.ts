@@ -14,6 +14,30 @@ export interface ProvinceInfo {
 //   打开地点选择框时才动态加载（lib/ziwei/county-data.ts）。区县选中后城市字段存成「地级市·区县」，
 //   见 lib/ziwei/county-label.ts。省直辖县级单位（仙桃、海南各市县、新疆兵团各市）仍是本表的市一级。
 export const PROVINCES: ProvinceInfo[] = [
+  // ─── Việt Nam ───────────────────────────────────────────
+  {
+    name: 'Việt Nam (Các tỉnh thành chính)',
+    cities: [
+      { name: 'Hà Nội', longitude: 105.85 },
+      { name: 'TP. Hồ Chí Minh', longitude: 106.66 },
+      { name: 'Đà Nẵng', longitude: 108.22 },
+      { name: 'Hải Phòng', longitude: 106.68 },
+      { name: 'Cần Thơ', longitude: 105.78 },
+      { name: 'Huế', longitude: 107.59 },
+      { name: 'Nha Trang (Khánh Hòa)', longitude: 109.19 },
+      { name: 'Vũng Tàu', longitude: 107.08 },
+      { name: 'Quy Nhơn (Bình Định)', longitude: 109.23 },
+      { name: 'Buôn Ma Thuột (Đắk Lắk)', longitude: 108.05 },
+      { name: 'Đà Lạt (Lâm Đồng)', longitude: 108.44 },
+      { name: 'Biên Hòa (Đồng Nai)', longitude: 106.84 },
+      { name: 'Thủ Dầu Một (Bình Dương)', longitude: 106.65 },
+      { name: 'Vinh (Nghệ An)', longitude: 105.68 },
+      { name: 'Thanh Hóa', longitude: 105.78 },
+      { name: 'Nam Định', longitude: 106.17 },
+      { name: 'Thái Nguyên', longitude: 105.84 },
+      { name: 'Hạ Long (Quảng Ninh)', longitude: 107.07 },
+    ],
+  },
   // ─── 直辖市 ───────────────────────────────────────────
   {
     name: '北京市',

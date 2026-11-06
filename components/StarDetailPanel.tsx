@@ -2,6 +2,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Star } from '@/lib/ziwei/types';
 import { STAR_DESCRIPTIONS } from '@/lib/ziwei/constants';
+import { translateStarName, translatePalaceName } from '@/lib/ziwei/vietnamese';
 
 interface StarDetailPanelProps {
   star: Star | null;
@@ -194,7 +195,7 @@ export default function StarDetailPanel({ star, palaceName, onClose }: StarDetai
           {/* 标题栏 */}
           <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid var(--t-border)' }}>
             <div className="flex items-center gap-2">
-              <span className="text-xl font-bold" style={{ color: 'var(--t-gold)' }}>{star.name}</span>
+              <span className="text-xl font-bold" style={{ color: 'var(--t-gold)' }}>{translateStarName(star.name)}</span>
               {typeConfig && (
                 <span className={`text-[10px] px-1.5 py-0.5 rounded-full border ${typeConfig.color}`}>
                   {typeConfig.label}
@@ -286,11 +287,11 @@ export default function StarDetailPanel({ star, palaceName, onClose }: StarDetai
 
                 <div className="grid grid-cols-2 gap-2">
                   <div className="text-[10px] p-2.5 rounded-lg" style={{ border: '1px solid rgba(74,222,128,0.15)', background: 'rgba(74,222,128,0.05)' }}>
-                    <div className="text-emerald-500 mb-0.5 font-medium">最佳宫位</div>
+                    <div className="text-emerald-500 mb-0.5 font-medium">Cung vị đắc địa nhất</div>
                     <div className="text-emerald-500/70">{detail.bestPalace}</div>
                   </div>
                   <div className="text-[10px] p-2.5 rounded-lg" style={{ border: '1px solid rgba(248,113,113,0.15)', background: 'rgba(248,113,113,0.05)' }}>
-                    <div className="text-red-500 mb-0.5 font-medium">注意宫位</div>
+                    <div className="text-red-500 mb-0.5 font-medium">Cung vị cần lưu ý</div>
                     <div className="text-red-500/70">{detail.worstPalace}</div>
                   </div>
                 </div>
@@ -302,24 +303,24 @@ export default function StarDetailPanel({ star, palaceName, onClose }: StarDetai
               <div className="text-xs leading-relaxed" style={{ color: 'var(--t-text2)' }}>
                 {star.type === 'lucky' && (
                   <>
-                    {star.name === '文昌' && '文昌入宫，主学业考试顺利，文书印鉴有利，宜从事文字相关工作。古诀：「文昌科甲，主文章显达，逢考必第。」'}
-                    {star.name === '文曲' && '文曲入宫，主才艺出众，口才佳，善于表达，艺术天赋强。古诀：「文曲为才艺之星，能文能武，口才胜人。」'}
-                    {star.name === '左辅' && '左辅入宫，主贵人相助，有人提携，该宫位事项受到善意支持。古诀：「左辅为助力之星，坐命则贵人多，逢凶化吉。」'}
-                    {star.name === '右弼' && '右弼入宫，主贵人相助，多出女性贵人，该宫位事项有人协助。古诀：「右弼为阴助之星，多女性贵人，化险为夷。」'}
-                    {star.name === '天魁' && '天魁入宫，主白天出生的贵人，男性贵人多，逢凶化吉之力。古诀：「天魁为天乙贵人，逢之必有贵人扶持。」'}
-                    {star.name === '天钺' && '天钺入宫，主夜晚出生的贵人，女性贵人多，增添吉祥之气。古诀：「天钺为玉堂贵人，主阴助，女贵人多。」'}
-                    {star.name === '禄存' && '禄存入宫，主财禄守成，该宫位有财气，但属于保守型财运。古诀：「禄存为财禄之星，主守财有余，进财稳健。」'}
-                    {star.name === '天马' && '天马入宫，主奔波动荡，动中求财，宜主动出击，不宜守株待兔。古诀：「天马主动，逢禄则财禄双全，动中生财。」'}
+                    {star.name === '文昌' && 'Văn Xương nhập cung: Chủ khoa bảng học vấn hanh thông, văn thư giấy tờ thuận lợi, danh hiển văn chương. Cổ quyết: 'Văn Xương khoa giáp, chủ văn chương hiển đạt, thi cử tất đỗ.''}
+                    {star.name === '文曲' && 'Văn Khúc nhập cung: Chủ tài hoa xuất chúng, khéo ăn nói, biểu đạt lưu loát, thiên phú nghệ thuật. Cổ quyết: 'Văn Khúc vi tài nghệ chi tinh, văn võ song toàn, tài biện hơn người.''}
+                    {star.name === '左辅' && 'Tả Phù nhập cung: Chủ quý nhân nâng đỡ, bạn bè tương trợ, gặp hung hóa cát. Cổ quyết: 'Tả Phù vi trợ lực chi tinh, tọa mệnh đa quý nhân, phùng hung hóa cát.''}
+                    {star.name === '右弼' && 'Hữu Bật nhập cung: Chủ âm trợ tương phùng, phái nữ giúp sức, chuyển nguy thành an. Cổ quyết: 'Hữu Bật vi âm trợ chi tinh, đa nữ quý nhân, hóa hiểm vi di.''}
+                    {star.name === '天魁' && 'Thiên Khôi nhập cung: Chủ Thiên Ất Quý Nhân (Dương quý nhân), đàn ông đề bạt giúp đỡ, nâng cao vị thế. Cổ quyết: 'Thiên Khôi vi Thiên Ất quý nhân, phùng chi tất hữu quý nhân phù trì.''}
+                    {star.name === '天钺' && 'Thiên Việt nhập cung: Chủ Ngọc Đường Quý Nhân (Âm quý nhân), nữ nhân tương trợ, gia tăng cát khí.'}
+                    {star.name === '禄存' && 'Lộc Tồn nhập cung: Chủ tài lộc dồi dào, tích lũy vững vàng, tiền bạc thịnh vượng bền vững. Cổ quyết: 'Lộc Tồn vi tài lộc chi tinh, chủ tích tài hữu dư, nhập tài ổn định.''}
+                    {star.name === '天马' && 'Thiên Mã nhập cung: Chủ năng động bôn ba, động trung sinh tài, phát đạt xa xứ. Cổ quyết: 'Thiên Mã chủ động, phùng Lộc tất tài lộc song toàn, dịch chuyển sinh tài.''}
                   </>
                 )}
                 {star.type === 'sha' && (
                   <>
-                    {star.name === '地空' && '地空入宫，主该宫位事项有落空感，精神耗散，宜注意心理健康。古诀：「地空主虚耗，入命宫者多精神迷茫，须防空想。」'}
-                    {star.name === '地劫' && '地劫入宫，主该宫位事项有意外损失，财物需谨慎，防小人。古诀：「地劫主劫财，入命宫者财运受损，防意外之失。」'}
-                    {star.name === '火星' && '火星入宫，主该宫位事项急躁冲动，情绪波动，但若遇贪狼则反吉。古诀：「火星主急燥，然遇贪狼同宫，反为火贪格，主暴发。」'}
-                    {star.name === '铃星' && '铃星入宫，主该宫位事项有暗中阻碍，防背后小人，凡事宜低调。古诀：「铃星主暗煞，入命者多暗中受敌，须防背后是非。」'}
-                    {star.name === '擎羊' && '擎羊入宫，主刑克，该宫位事项多波折，有血光之灾或意外。古诀：「擎羊为刑克之星，入命宫者多刑克，须防意外血光。」'}
-                    {star.name === '陀罗' && '陀罗入宫，主是非缠身，该宫位事项拖延不决，凡事宜早做准备。古诀：「陀罗主是非拖延，入命宫者做事迟缓，须防纠缠不清。」'}
+                    {star.name === '地空' && 'Địa Không nhập cung: Chủ tính hư vô, tâm linh ngộ tính, đề phòng tiền bạc hao hụt, tâm tính phân tán. Cổ quyết: 'Địa Không chủ hư hao, ngộ Đạo triết học, phòng việc dở dang.''}
+                    {star.name === '地劫' && 'Địa Kiếp nhập cung: Chủ tổn hao bất ngờ, làm việc nên cẩn trọng, phòng tiểu nhân tranh chấp. Cổ quyết: 'Địa Kiếp chủ kiếp tài, đề phòng phá tài ngoài ý muốn.''}
+                    {star.name === '火星' && 'Hỏa Tinh nhập cung: Tính khí nóng nảy, bộc trực; nếu đồng cung ngộ Tham Lang hợp thành 'Hỏa Tham Cách' chủ bạo phát tài lộc. Cổ quyết: 'Hỏa Tinh ngộ Tham Lang, xưng vi Hỏa Tham cách, chủ cự phú.''}
+                    {star.name === '铃星' && 'Linh Tinh nhập cung: Sát khí tiềm tàng, làm việc nên kín kẽ đề phòng thị phi. Ngộ Tham Lang đồng cung thành 'Linh Tham Cách' phát phúc dài lâu.'}
+                    {star.name === '擎羊' && 'Kình Dương nhập cung: Cương liệt dũng mãnh nhưng hình khắc, đề phòng va chạm xước xát huyết quang. Cổ quyết: 'Kình Dương vi hình khắc chi tinh, tính cương quả quyết.''}
+                    {star.name === '陀罗' && 'Đà La nhập cung: Chủ ám muội dây dưa, công việc dễ chậm trễ, cần kiên trì nhẫn nại vượt qua. Cổ quyết: 'Đà La chủ thị phi trì trệ, sự tình đa ma triền miên.''}
                   </>
                 )}
               </div>

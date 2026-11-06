@@ -224,75 +224,70 @@ export function paramsToConfig(params: URLSearchParams): SchoolConfig {
 // ─── UI 显示用：每个开关的所有选项 + 中文标签 ──────────────────────────
 
 export const SCHOOL_OPTIONS = {
-  // ★ 2026-06-17 统一格式(用户要求):每组【默认项】固定排第一,且 desc 统一以「默认 · xxx」开头
   brightnessSchool: [
-    // ★ 10-20 默认项 = 《斗数全书》（主流排盘默认口径「星曜亮度依据斗数全书」），底层就是 QS 表，所以不再另列 QS
-    { value: 'default', label: '《斗数全书》派', desc: '默认 · 与主流排盘软件默认一致' },
-    { value: 'XD2', label: '现代修正 v2', desc: '现代修订亮度表（第二版）' },
-    { value: 'XD1', label: '现代修正 v1', desc: '现代修订亮度表（第一版）' },
-    { value: 'ZZ', label: '中州派', desc: '中州派理论' },
+    { value: 'default', label: 'Phái 《Đẩu Số Toàn Thư》', desc: 'Mặc định · Đồng nhất chuẩn phổ biến' },
+    { value: 'XD2', label: 'Hiện đại hiệu chỉnh v2', desc: 'Bảng độ sáng hiệu chỉnh hiện đại (Bản 2)' },
+    { value: 'XD1', label: 'Hiện đại hiệu chỉnh v1', desc: 'Bảng độ sáng hiệu chỉnh hiện đại (Bản 1)' },
+    { value: 'ZZ', label: 'Trung Châu Phái', desc: 'Lý thuyết Trung Châu Phái' },
   ],
   gengYearSihua: [
-    { value: 'GYWYT', label: '阳武阴同', desc: '默认 · 与 iztro / 主流一致' },
-    { value: 'GYWTY', label: '阳武同阴', desc: '科忌互换说' },
-    { value: 'GYWFT', label: '阳武府同' },
-    { value: 'GYWFX', label: '阳武府相' },
-    { value: 'GYWTX', label: '阳武同相' },
+    { value: 'GYWYT', label: 'Dương Vũ Âm Đồng', desc: 'Mặc định · Thái Dương Lộc, Vũ Khúc Quyền, Thái Âm Khoa, Thiên Đồng Kỵ' },
+    { value: 'GYWTY', label: 'Dương Vũ Đồng Âm', desc: 'Thuyết hoán đổi Khoa - Kỵ' },
+    { value: 'GYWFT', label: 'Dương Vũ Phủ Đồng', desc: 'Thái Dương Lộc, Vũ Khúc Quyền, Thiên Phủ Khoa, Thiên Đồng Kỵ' },
+    { value: 'GYWFX', label: 'Dương Vũ Phủ Tướng', desc: 'Thái Dương Lộc, Vũ Khúc Quyền, Thiên Phủ Khoa, Thiên Tướng Kỵ' },
+    { value: 'GYWTX', label: 'Dương Vũ Đồng Tướng', desc: 'Thái Dương Lộc, Vũ Khúc Quyền, Thiên Đồng Khoa, Thiên Tướng Kỵ' },
   ],
   tianmaSchool: [
-    { value: 'year-branch', label: '依据年支', desc: '默认 · 年支起天马' },
-    { value: 'month-branch', label: '依据月支' },
+    { value: 'year-branch', label: 'Theo Niên Chi', desc: 'Mặc định · Khởi Thiên Mã theo Chi năm sinh' },
+    { value: 'month-branch', label: 'Theo Nguyệt Chi', desc: 'Khởi Thiên Mã theo Chi tháng sinh' },
   ],
   tiankongSchool: [
-    { value: 'normal', label: '常规排法', desc: '默认 · 常规起天空' },
-    { value: 'shun-jia-shi', label: '顺加生时' },
+    { value: 'normal', label: 'Khởi thông thường', desc: 'Mặc định · An Thiên Không theo lệ thường' },
+    { value: 'shun-jia-shi', label: 'Thuận gia giờ sinh', desc: 'Khởi Thiên Không thuận theo giờ sinh' },
   ],
   jiekongSchool: [
-    { value: 'double', label: '正副双星', desc: '默认 · 正副双星并用' },
-    { value: 'single', label: '常规单星' },
-    { value: 'zhanyan', label: '占验派' },
+    { value: 'double', label: 'Chính - Phụ song tinh', desc: 'Mặc định · Sử dụng đồng thời Chính Không và Phó Không' },
+    { value: 'single', label: 'Đơn tinh thông thường', desc: 'Chỉ an một sao Triệt Không' },
+    { value: 'zhanyan', label: 'Chiêm Nghiệm Phái', desc: 'Theo phương pháp Chiêm Nghiệm Phái' },
   ],
   kuiyueSchool: [
-    { value: 'qs1', label: '《斗数全书》理解 1', desc: '默认 · 全书歌诀理解一' },
-    { value: 'qs2', label: '《斗数全书》理解 2', desc: '差异仅在庚辛壬癸年生人' },
-    { value: 'zhong-yiming', label: '钟义明先生书籍排法' },
-    { value: 'network', label: '网络流传排法' },
+    { value: 'qs1', label: '《Đẩu Số Toàn Thư》 Lý giải 1', desc: 'Mặc định · Khẩu quyết Toàn Thư lý giải 1' },
+    { value: 'qs2', label: '《Đẩu Số Toàn Thư》 Lý giải 2', desc: 'Khác biệt ở các năm Canh, Tân, Nhâm, Quý' },
+    { value: 'zhong-yiming', label: 'Phương pháp Chung Nghĩa Minh', desc: 'Theo sách của tiên sinh Chung Nghĩa Minh' },
+    { value: 'network', label: 'Phương pháp mạng phổ biến', desc: 'Cách an truyền bá trên mạng' },
   ],
   tianshiTianshang: [
-    { value: 'normal', label: '常规排法', desc: '默认 · 身宫 ±5 位' },
-    { value: 'zhongzhou', label: '中州派排法', desc: '生月奇偶 × 性别 交换' },
+    { value: 'normal', label: 'Khởi thông thường', desc: 'Mặc định · Cung Thân ±5 vị trí' },
+    { value: 'zhongzhou', label: 'Trung Châu Phái', desc: 'Tháng chẵn lẻ × Giới tính hoán chuyển' },
   ],
   changshengSchool: [
-    { value: 'yin-yang-shun-ni', label: '区分阴阳顺逆', desc: '默认 · 阴阳顺逆起长生' },
-    { value: 'shui-tu', label: '水土共长生', desc: '土五局起点 = 水二局起点 (申)' },
-    { value: 'huo-tu', label: '火土共长生', desc: '土五局起点 = 火六局起点 (寅)' },
+    { value: 'yin-yang-shun-ni', label: 'Phân định Âm Dương Thuận Nghịch', desc: 'Mặc định · Dương Nam Âm Nữ thuận, Âm Nam Dương Nữ nghịch' },
+    { value: 'shui-tu', label: 'Thủy Thổ đồng Tràng Sinh', desc: 'Điểm khởi Thổ Ngũ Cục = Thủy Nhị Cục (Thân)' },
+    { value: 'huo-tu', label: 'Hỏa Thổ đồng Tràng Sinh', desc: 'Điểm khởi Thổ Ngũ Cục = Hỏa Lục Cục (Dần)' },
   ],
   lateZishi: [
-    { value: 'next-day', label: '视为次日', desc: '默认 · 主流做法' },
-    { value: 'current-day', label: '视为当日', desc: '倪师派' },
-    { value: 'all-current', label: '日柱当日 / 时柱当日（八字）' },
-    { value: 'day-cur-time-next', label: '日柱当日 / 时柱次日（八字）' },
+    { value: 'next-day', label: 'Tính sang ngày hôm sau', desc: 'Mặc định · Chuẩn phổ thông (23h-24h tính ngày sau)' },
+    { value: 'current-day', label: 'Tính trong ngày hôm đó', desc: 'Nghê Sư Phái (Dạ Tý giữ nguyên ngày)' },
+    { value: 'all-current', label: 'Trụ ngày giữ nguyên / Trụ giờ giữ nguyên (Bát tự)' },
+    { value: 'day-cur-time-next', label: 'Trụ ngày giữ nguyên / Trụ giờ tính ngày sau (Bát tự)' },
   ],
-  // ★ 2026-06-17 全站约定:每组默认选项一律排第一；去「天机」二字(避商标侵权)
-  // ★ 2026-09-05 默认改为分半：主流排盘默认口径「月中分界」，150 组金标准盘对照唯此口径逐星全同
   leapMonth: [
-    { value: 'split', label: '视为分半', desc: '默认 · 「月中分界」，与主流排盘软件默认一致（前 15 天归本月 / 后 15 天归下月，150 组对照盘验证）' },
-    { value: 'prev-month', label: '视为本月', desc: '闰四月整月当四月普通月排' },
-    { value: 'next-month', label: '视为下月', desc: '倪师派（闰四月整月当五月排）' },
-    { value: 'origin-month', label: '保持闰月', desc: '不调整，闰四月仍标闰月' },
+    { value: 'split', label: 'Phân nửa tháng (Chia đôi)', desc: 'Mặc định · Trước ngày 15 tính tháng này / Sau ngày 15 tính tháng sau' },
+    { value: 'prev-month', label: 'Tính về tháng này', desc: 'Nhuận tháng nào tính trọn tháng đó' },
+    { value: 'next-month', label: 'Tính sang tháng sau', desc: 'Nghê Sư Phái (Nhuận tháng nào tính trọn sang tháng kế tiếp)' },
+    { value: 'origin-month', label: 'Giữ nguyên tháng Nhuận', desc: 'Không điều chỉnh' },
   ],
 } as const;
 
-/** 10 类配置的中文标签（用于 UI 标题）*/
 export const SCHOOL_LABELS: Record<keyof SchoolConfig, string> = {
-  brightnessSchool: '星曜亮度表',
-  gengYearSihua: '庚年四化',
-  tianmaSchool: '安天马',
-  tiankongSchool: '安天空',
-  jiekongSchool: '安截空旬空',
-  kuiyueSchool: '安魁钺',
-  tianshiTianshang: '安天使天伤',
-  changshengSchool: '长生十二神',
-  lateZishi: '晚子时',
-  leapMonth: '闰月归属',
+  brightnessSchool: 'Bảng độ sáng tinh diệu (Miếu Hãm)',
+  gengYearSihua: 'Can Canh Tứ Hóa',
+  tianmaSchool: 'An Thiên Mã',
+  tiankongSchool: 'An Thiên Không',
+  jiekongSchool: 'An Triệt Không Tuần Không',
+  kuiyueSchool: 'An Khôi Việt',
+  tianshiTianshang: 'An Thiên Sứ Thiên Thương',
+  changshengSchool: 'Vòng Tràng Sinh 12 Thần',
+  lateZishi: 'Xử lý Giờ Dạ Tý (23h-24h)',
+  leapMonth: 'Quy thuộc tháng Nhuận',
 };

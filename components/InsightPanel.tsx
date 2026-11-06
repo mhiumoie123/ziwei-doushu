@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { ZiweiChart, Palace } from '@/lib/ziwei/types';
+import { translateStarName, translatePalaceName, translateSiHua } from '@/lib/ziwei/vietnamese';
 import type { TimeView } from './TimeNav';
 
 interface Message {
@@ -32,101 +33,101 @@ const TOPICS = [
 ] as const;
 
 const TOPIC_PROMPTS: Record<string, string> = {
-  overview: `请生成命格总览，按以下结构输出：
+  overview: `Vui lòng tạo bản tổng quan mệnh cách theo cấu trúc sau:
 
-**【命格定性】**
-用一句话概括这个命盘的核心格局与命主气质。
+**【Định Tính Mệnh Cách】**
+Khái quát ngắn gọn cục diện cốt lõi của lá số và khí chất mệnh chủ.
 
-**【主星解读】**
-命宫主星的核心特质，引用倪海厦原话或观点。
+**【Luận Giải Chính Tinh】**
+Đặc tính cốt lõi của chính tinh cung Mệnh, dẫn giải quan điểm của thầy Nghê Hải Hà.
 
-**【三方四正】**
-财、官、迁三宫的联动分析及整体格局。
+**【Tam Phương Tứ Chính】**
+Liên hệ cung Tài Bạch, Quan Lộc, Thiên Di và cục diện tổng thể.
 
-**【当前大限】**
-当下大限运势方向与最值得关注的事项。
+**【Đại Hạn Hiện Tại】**
+Định hướng vận trình Đại Hạn hiện tại và những điểm cần lưu tâm nhất.
 
-**【优势与注意】**
-命盘天赋优势，以及需要注意的风险或功课。`,
+**【Ưu Thế & Lưu Ý】**
+Thiên phú bẩm sinh cùng các rủi ro, bài học cần chú ý.`,
 
-  love: `请深度分析感情婚姻运，按以下结构输出：
+  love: `Vui lòng phân tích chuyên sâu vận trình tình cảm, hôn nhân theo cấu trúc sau:
 
-**【感情格局】**
-一句话定性感情命格。
+**【Cục Diện Tình Duyên】**
+Một câu định tính cục diện tình cảm hôn nhân.
 
-**【夫妻宫分析】**
-夫妻宫主星、四化，以及倪海厦体系的具体解读。
+**【Phân Tích Cung Phu Thê】**
+Chính tinh, Tứ Hóa cung Phu Thê và luận giải theo hệ thống Nghê Hải Hà.
 
-**【三方联动】**
-相关宫位对感情的影响。
+**【Tam Phương Tứ Chính Phối Hợp】**
+Tác động từ các cung vị liên quan tới tình cảm.
 
-**【当前大限感情运】**
-当下10年感情走向与关键节点。
+**【Vận Trình Tình Cảm Đại Hạn Hiện Tại】**
+Xu hướng tình cảm 10 năm hiện tại và các mốc thời gian then chốt.
 
-**【实际建议】**
-具体可行的感情建议。`,
+**【Lời Khuyên Ứng Xử】**
+Gợi ý thực tế, khả thi trong quan hệ tình cảm.`,
 
-  career: `请深度分析事业运，按以下结构输出：
+  career: `Vui lòng phân tích chuyên sâu vận trình sự nghiệp theo cấu trúc sau:
 
-**【事业格局】**
-一句话定性事业命格，宜任职或宜创业。
+**【Cục Diện Sự Nghiệp】**
+Một câu định tính mệnh cách sự nghiệp: hợp làm công chức, chuyên môn hay khởi nghiệp làm chủ.
 
-**【官禄宫分析】**
-官禄宫主星、四化，以及倪师对这种配置的判断。
+**【Phân Tích Cung Quan Lộc】**
+Chính tinh, Tứ Hóa cung Quan Lộc và đánh giá theo hệ thống Nghê Hải Hà.
 
-**【财帛宫联动】**
-财运与事业的关系，财路来源分析。
+**【Phối Hợp Cung Tài Bạch】**
+Mối quan hệ giữa sự nghiệp và tiền tài, nguồn tài lộc đến từ đâu.
 
-**【当前大限事业运】**
-当下10年事业走向。
+**【Vận Trình Sự Nghiệp Đại Hạn Hiện Tại】**
+Xu hướng phát triển công danh sự nghiệp trong 10 năm hiện tại.
 
-**【实际建议】**
-适合的方向、行业与策略。`,
+**【Lời Khuyên Định Hướng】**
+Ngành nghề, phương hướng và sách lược hành động phù hợp nhất.`,
 
-  wealth: `请深度分析财运，按以下结构输出：
+  wealth: `Vui lòng phân tích chuyên sâu tài vận theo cấu trúc sau:
 
-**【财运格局】**
-一句话定性财运模式，是主动财还是被动财。
+**【Cục Diện Tài Vận】**
+Một câu định tính mô hình tài lộc: tài chính chủ động hay tài chính thụ động, tích lũy hay khai phá.
 
-**【财帛宫分析】**
-财帛宫主星、四化，财富来源与流动模式。
+**【Phân Tích Cung Tài Bạch】**
+Chính tinh, Tứ Hóa cung Tài Bạch, nguồn gốc tiền tài và cách thức luân chuyển tài chính.
 
-**【田宅宫（财库）】**
-积蓄能力与不动产运势分析。
+**【Cung Điền Trạch (Kho Chứa Tài Sản)】**
+Khả năng tụ tài, tích lũy điền sản và vận thế bất động sản.
 
-**【当前大限财运】**
-当下财运走向与注意事项。
+**【Tài Vận Đại Hạn Hiện Tại】**
+Xu hướng tài lộc giai đoạn hiện tại và các rủi ro tài chính cần phòng ngừa.
 
-**【理财建议】**
-具体的财务建议。`,
+**【Lời Khuyên Quản Lý Tài Chính】**
+Chiến lược quản lý và gia tăng tài sản cụ thể.`,
 
-  health: `请分析健康运势，按以下结构输出：
+  health: `Vui lòng phân tích sức khỏe theo cấu trúc sau:
 
-**【疾厄宫主星】**
-疾厄宫星曜与健康含义。
+**【Chính Tinh Cung Tật Ách】**
+Các sao tọa thủ cung Tật Ách và ý nghĩa đối với thể chất.
 
-**【主要风险】**
-结合倪海厦子午流注理论，分析主要健康隐患与需关注的部位。
+**【Rủi Ro Sức Khỏe Tiềm Ẩn】**
+Kết hợp lý thuyết Tử Ngọ Lưu Chú của thầy Nghê Hải Hà, phân tích những cơ quan nội tạng hoặc bộ phận cần lưu ý.
 
-**【大限健康走势】**
-当下健康趋势与关键时间段。
+**【Xu Hướng Sức Khỏe Đại Hạn】**
+Diễn biến sức khỏe trong giai đoạn hiện tại và các thời điểm cần chú ý.
 
-**【预防建议】**
-具体注意事项与养生方向。`,
+**【Lời Khuyên Dưỡng Sinh & Phòng Ngừa】**
+Biện pháp bảo dưỡng sức khỏe và lối sống phù hợp.`,
 
-  personality: `请深度解析性格特质，按以下结构输出：
+  personality: `Vui lòng phân tích chiều sâu tính cách theo cấu trúc sau:
 
-**【命宫主星性格】**
-命宫主星的核心性格特质，引用倪师原话。
+**【Tính Cách Chính Tinh Cung Mệnh】**
+Đặc tính cốt lõi của chính tinh thủ Mệnh, trích dẫn luận điểm của thầy Nghê Hải Hà.
 
-**【三方性格综合】**
-财、官、迁三宫对性格的影响，全貌描绘。
+**【Tổng Hợp Tam Phương】**
+Ảnh hưởng từ cung Tài Bạch, Quan Lộc, Thiên Di đến tính cách, phác họa toàn diện chân dung.
 
-**【人际关系模式】**
-与他人互动方式、待人处世风格。
+**【Phong Cách Đối Nhân Xử Thế】**
+Cách thức tương tác xã hội, giao tiếp và ứng xử với các mối quan hệ.
 
-**【优势与人生课题】**
-天赋优势，以及需要面对的人生功课。`,
+**【Thế Mạnh & Bài Học Cuộc Đời】**
+Ưu thế thiên bẩm và những bài học cuộc đời cần tu dưỡng.`,
 };
 
 const PALACE_ROLES: Record<string, string> = {
@@ -282,8 +283,8 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
         body: JSON.stringify({ chart, messages: apiMessages }),
       });
       if (res.status === 404) throw new Error('api-missing');
-      if (!res.ok) throw new Error('请求失败');
-      if (!res.body) throw new Error('无响应流');
+      if (!res.ok) throw new Error('Yêu cầu thất bại');
+      if (!res.body) throw new Error('Không có luồng phản hồi');
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
@@ -312,7 +313,7 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
       }
     } catch (e) {
       const missing = e instanceof Error && e.message === 'api-missing';
-      setMessages(prev => [...prev, { role: 'assistant', content: missing ? '开源版不含 AI 解读接口（/api/interpret），需要你自己实现后才能用，详见 README「快速开始」。排盘本身不需要任何 API Key。' : '解读失败，请稍后重试。' }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: missing ? 'Bản mã nguồn mở không kèm sẵn AI API (/api/interpret). Phần an sao và lập lá số hoạt động 100% độc lập không cần API Key.' : 'Luận giải thất bại, vui lòng thử lại sau.' }]);
     } finally {
       setLoading(false);
       loadingRef.current = false;
@@ -380,7 +381,7 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center">
             <div className="text-4xl mb-3" style={{ color: 'var(--t-gold)', opacity: 0.1 }}>✦</div>
-            <p className="text-[10px] animate-pulse" style={{ color: 'var(--t-faint)' }}>命格解读生成中…</p>
+            <p className="text-[10px] animate-pulse" style={{ color: 'var(--t-faint)' }}>Đang khởi tạo luận giải mệnh cách…</p>
           </div>
         )}
 
@@ -423,7 +424,7 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
                   style={{ color: 'var(--t-faint)' }}
                 >
                   <span style={{ color: 'var(--t-gold)', opacity: 0.4 }}>✦</span>
-                  命理解读
+                  LUẬN GIẢI MỆNH LÝ
                 </div>
                 <AiContent text={msg.content} streaming={loading && isLastMsg} />
               </motion.div>
@@ -440,7 +441,7 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
-            placeholder="继续追问，如：今年适合换工作吗？"
+            placeholder="Đặt câu hỏi, ví dụ: Năm nay công danh thế nào?..."
             disabled={loading}
             className="flex-1 rounded-lg px-3 py-2 text-[11px] focus:outline-none transition-colors"
             style={{
@@ -459,7 +460,7 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
               color: 'var(--t-gold)',
             }}
           >
-            {loading ? '…' : '追问'}
+            {loading ? '…' : 'Hỏi tiếp'}
           </button>
         </div>
       </div>

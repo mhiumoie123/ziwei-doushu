@@ -87,7 +87,7 @@ export default function HemingPage() {
   const runAnalysis = useCallback(async (q?: string) => {
     setFormError(null);
     if (!isFormReady(formA) || !isFormReady(formB)) {
-      setFormError('请先填写双方完整出生信息');
+      setFormError('Vui lòng điền đầy đủ thông tin ngày giờ sinh của cả hai bên');
       return;
     }
     setAnalyzing(true);
@@ -178,12 +178,12 @@ export default function HemingPage() {
           }}
         >
           <span style={{ fontSize: '16px' }}>‹</span>
-          <span>返回</span>
+          <span>Trang chủ</span>
         </button>
         <div style={{ width: '1px', height: '20px', background: 'var(--bdr-med)' }} />
-        <span style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.2em' }}>合盘分析</span>
+        <span style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.2em' }}>Phân Tích Hợp Mệnh</span>
         <div style={{ flex: 1 }} />
-        <span style={{ fontSize: '11px', color: 'var(--tx-3)' }}>感情 · 合伙 · 亲子 · 朋友</span>
+        <span style={{ fontSize: '11px', color: 'var(--tx-3)' }}>Tình Cảm · Hợp Tác · Phụ Mẫu Tử Tức · Bằng Hữu</span>
       </header>
 
       {/* 主体 */}
@@ -196,7 +196,7 @@ export default function HemingPage() {
             紫微合盘
           </h1>
           <p style={{ fontSize: '13px', color: 'var(--tx-3)', lineHeight: 1.6 }}>
-            输入两个人的出生信息，AI 基于倪海厦体系分析双方命盘的缘分匹配度、感情走向与相处建议
+            Nhập thông tin ngày giờ sinh của hai người. AI phân tích chuyên sâu mức độ tương hợp duyên phận, xu hướng tình cảm và lời khuyên ứng xử dựa trên hệ thống Tử Vi chính tông Nghê Hải Hà.
           </p>
         </div>
 
@@ -205,7 +205,7 @@ export default function HemingPage() {
           className="heming-grid">
           {/* 甲方 */}
           <div style={cardStyle}>
-            <span style={labelStyle}>甲方 — A</span>
+            <span style={labelStyle}>Bên A</span>
             <BirthForm
               hideSubmit
               onSubmit={() => {}}
@@ -215,7 +215,7 @@ export default function HemingPage() {
 
           {/* 乙方 */}
           <div style={cardStyle}>
-            <span style={labelStyle}>乙方 — B</span>
+            <span style={labelStyle}>Bên B</span>
             <BirthForm
               hideSubmit
               onSubmit={() => {}}
@@ -236,7 +236,7 @@ export default function HemingPage() {
           {/* 区块标题 */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: (analysis || analyzing) ? '20px' : '24px' }}>
             <span style={{ color: 'var(--ac)', opacity: 0.6 }}>◉</span>
-            <span style={{ fontSize: '11px', letterSpacing: '0.3em', color: 'var(--tx-3)' }}>合盘分析 · HEMING</span>
+            <span style={{ fontSize: '11px', letterSpacing: '0.3em', color: 'var(--tx-3)' }}>LUẬN GIẢI HỢP MỆNH · HEMING</span>
           </div>
 
           {/* 状态分支 */}
@@ -259,7 +259,7 @@ export default function HemingPage() {
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
               >
-                开始合盘分析
+                Bắt đầu phân tích Hợp Mệnh
               </button>
               {formError && (
                 <div style={{ marginTop: '20px', fontSize: '13px', color: '#dc2626' }}>
@@ -276,7 +276,7 @@ export default function HemingPage() {
                 border: '2px solid var(--bdr-med)', borderTopColor: 'var(--ac)',
                 borderRadius: '50%', animation: 'spin 0.8s linear infinite',
               }} />
-              正在对比双方命盘…
+              Đang đối chiếu lá số hai bên…
             </div>
           )}
 
@@ -285,8 +285,8 @@ export default function HemingPage() {
           {analysisError && (
             <div style={{ padding: '12px 16px', borderRadius: '10px', border: '1px solid var(--bdr)', background: 'var(--bg-card)', fontSize: '13px', color: 'var(--tx-2)', marginTop: '12px' }}>
               {apiMissing
-                ? '开源版不含合盘 AI 分析接口（/api/heming），需要你自己实现后才能用。两人的命盘可以分别到「排盘」页（/chart）查看。'
-                : '分析暂时不可用，请重试。'}
+                ? 'Bản mã nguồn mở không kèm sẵn API phân tích hợp mệnh (/api/heming), bạn có thể tự cấu hình kết nối API AI. Lá số của từng người có thể xem độc lập tại trang Lập Lá Số (/chart).'
+                : 'Phân tích tạm thời gián đoạn, vui lòng thử lại.'}
             </div>
           )}
         </div>
@@ -295,7 +295,7 @@ export default function HemingPage() {
         {analysis && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '16px' }}>
             <div style={{ fontSize: '11px', letterSpacing: '0.2em', color: 'var(--tx-3)', marginBottom: '4px' }}>
-              针对此次合盘继续追问
+              Hỏi thêm về kết quả hợp mệnh này
             </div>
 
             {/* 快捷问题 */}
@@ -335,7 +335,7 @@ export default function HemingPage() {
                 value={question}
                 onChange={e => setQuestion(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter' && !analyzing) runAnalysis(question || undefined); }}
-                placeholder="继续追问，如：哪几年是两人感情关键期？"
+                placeholder="Tiếp tục hỏi, ví dụ: Năm nào là giai đoạn then chốt trong tình cảm hai người?..."
                 disabled={analyzing}
                 className="input-base"
                 style={{ fontSize: '13px', flex: 1 }}
@@ -352,7 +352,7 @@ export default function HemingPage() {
                   transition: 'all 0.15s', whiteSpace: 'nowrap',
                 }}
               >
-                {analyzing ? '分析中…' : '继续追问'}
+                {analyzing ? 'Đang phân tích…' : 'Hỏi tiếp'}
               </button>
             </div>
           </div>

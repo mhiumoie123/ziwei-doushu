@@ -40,10 +40,10 @@ export default function ShareModal({ open, onClose, shareUrl, chart, birth, high
     try {
       const dataURL = await captureShareCard();
       if (!dataURL) {
-        alert('图片生成失败，请截图保存或刷新重试');
+        alert('Tạo ảnh thất bại, vui lòng chụp màn hình hoặc thử lại sau!');
         return;
       }
-      downloadDataURL(dataURL, `紫微命盘_${Date.now()}.png`);
+      downloadDataURL(dataURL, `LaSoTuVi_${Date.now()}.png`);
     } finally {
       setDownloading(false);
     }
@@ -75,14 +75,14 @@ export default function ShareModal({ open, onClose, shareUrl, chart, birth, high
               boxShadow: '0 24px 60px rgba(0,0,0,0.3)',
             }}
           >
-            {/* 顶部标题 */}
+            {/* Header */}
             <div style={{
               padding: '14px 18px',
               borderBottom: '1px solid rgba(184,146,42,0.15)',
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             }}>
-              <div style={{ fontSize: '14px', fontWeight: 600, color: '#3d2f10', letterSpacing: '0.12em' }}>
-                ✦ 分享命盘
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#3d2f10', letterSpacing: '0.08em' }}>
+                ✦ Chia Sẻ Lá Số Tử Vi
               </div>
               <button onClick={onClose}
                 style={{
@@ -93,7 +93,7 @@ export default function ShareModal({ open, onClose, shareUrl, chart, birth, high
               >×</button>
             </div>
 
-            {/* 卡片图预览（实际渲染） */}
+            {/* Preview Canvas */}
             <div style={{ padding: '20px', background: '#fbf6e8', display: 'flex', justifyContent: 'center', overflowX: 'auto' }}>
               {chart && (
                 <ShareCardCanvas chart={chart} birth={birth} highlight={highlight} />
@@ -101,33 +101,33 @@ export default function ShareModal({ open, onClose, shareUrl, chart, birth, high
             </div>
 
             <div style={{ padding: '0 20px 12px', textAlign: 'center', fontSize: '11px', color: '#a89b7c', letterSpacing: '0.05em' }}>
-              ↑ 朋友圈 / 微信 / 抖音 / 小红书 都能用
+              ↑ Chia sẻ dễ dàng qua Facebook, Zalo, Telegram, mạng xã hội
             </div>
 
-            {/* 操作区 */}
+            {/* Action buttons */}
             <div style={{ padding: '0 20px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <button onClick={downloadImage} disabled={downloading}
                 style={{
                   padding: '14px', borderRadius: '10px', border: 'none',
                   background: 'linear-gradient(135deg, #d4a948 0%, #b8922a 100%)',
-                  color: 'white', fontSize: '14px', fontWeight: 600, letterSpacing: '0.15em',
+                  color: 'white', fontSize: '14px', fontWeight: 600, letterSpacing: '0.08em',
                   cursor: downloading ? 'not-allowed' : 'pointer',
                   boxShadow: '0 4px 12px rgba(184,146,42,0.3)',
                   opacity: downloading ? 0.7 : 1,
                 }}
               >
-                {downloading ? '生成中…' : '⬇ 下载分享图'}
+                {downloading ? 'Đang tạo ảnh…' : '⬇ Tải Về Ảnh Lá Số'}
               </button>
 
               <button onClick={copyLink}
                 style={{
                   padding: '14px', borderRadius: '10px',
                   border: '1px solid rgba(184,146,42,0.4)', background: 'white',
-                  color: '#b8922a', fontSize: '14px', fontWeight: 500, letterSpacing: '0.12em',
+                  color: '#b8922a', fontSize: '14px', fontWeight: 500, letterSpacing: '0.08em',
                   cursor: 'pointer',
                 }}
               >
-                {copied ? '✓ 已复制链接' : '🔗 复制命盘链接'}
+                {copied ? '✓ Đã sao chép liên kết!' : '🔗 Sao Chép Liên Kết Lá Số'}
               </button>
 
               <div style={{
@@ -135,9 +135,9 @@ export default function ShareModal({ open, onClose, shareUrl, chart, birth, high
                 padding: '10px 12px', background: 'rgba(184,146,42,0.05)',
                 borderRadius: '8px', marginTop: '4px',
               }}>
-                <div style={{ marginBottom: '4px', fontWeight: 600, color: '#8b6a14' }}>使用提示：</div>
-                · 下载图片可发朋友圈 / 抖音 / 小红书<br />
-                · 复制链接发给微信好友，对方点开看自己的盘起点
+                <div style={{ marginBottom: '4px', fontWeight: 600, color: '#8b6a14' }}>Hướng dẫn:</div>
+                · Tải ảnh lá số lưu vào máy hoặc gửi cho người thân, bạn bè<br />
+                · Sao chép liên kết để người khác có thể mở trực tiếp lá số trên trình duyệt
               </div>
             </div>
           </motion.div>
