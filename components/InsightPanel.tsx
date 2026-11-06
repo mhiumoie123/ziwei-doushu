@@ -24,12 +24,12 @@ interface InsightPanelProps {
 }
 
 const TOPICS = [
-  { key: 'overview',     label: '命格' },
-  { key: 'love',        label: '感情' },
-  { key: 'career',      label: '事业' },
-  { key: 'wealth',      label: '财运' },
-  { key: 'health',      label: '健康' },
-  { key: 'personality', label: '性格' },
+  { key: 'overview',     label: 'Mệnh Cách' },
+  { key: 'love',        label: 'Tình Cảm' },
+  { key: 'career',      label: 'Sự Nghiệp' },
+  { key: 'wealth',      label: 'Tài Vận' },
+  { key: 'health',      label: 'Sức Khỏe' },
+  { key: 'personality', label: 'Tính Cách' },
 ] as const;
 
 const TOPIC_PROMPTS: Record<string, string> = {
@@ -131,18 +131,30 @@ Cách thức tương tác xã hội, giao tiếp và ứng xử với các mối
 };
 
 const PALACE_ROLES: Record<string, string> = {
-  '命宫':   '自我、性格、先天格局',
-  '兄弟宫': '兄弟关系、合伙人',
-  '夫妻宫': '感情关系、婚姻状态',
-  '子女宫': '子女缘分、下属关系',
-  '财帛宫': '财运来源、收入方式',
-  '疾厄宫': '身体健康、意外',
-  '迁移宫': '外出机遇、人际格局',
-  '交友宫': '朋友圈、贵人、小人',
-  '官禄宫': '事业成就、社会地位',
-  '田宅宫': '不动产、家庭环境',
-  '福德宫': '精神享受、内心福分',
-  '父母宫': '父母关系、文书契约',
+  '命宫':   'Bản thân, tính cách, cách cục tiên thiên',
+  '兄弟宫': 'Quan hệ anh em, tri kỷ, cộng sự',
+  '夫妻宫': 'Tình duyên, phối ngẫu, hôn nhân',
+  '子女宫': 'Duyên con cái, hậu bối, cấp dưới',
+  '财帛宫': 'Tài lộc, nguồn thu, phong cách quản lý tiền bạc',
+  '疾厄宫': 'Sức khỏe thể chất, bệnh tật, ách nạn',
+  '迁移宫': 'Cơ hội xuất hành, giao tế xã hội, đối ngoại',
+  '交友宫': 'Bạn bè, mạng lưới giao thiệp, quý nhân và tiểu nhân',
+  '官禄宫': 'Sự nghiệp, danh vọng, địa vị xã hội',
+  '田宅宫': 'Bất động sản, điền sản, gia đạo, cội nguồn gia đình',
+  '福德宫': 'Đời sống tinh thần, nội tâm, phúc đức',
+  '父母宫': 'Phụ mẫu, trưởng bối, giấy tờ văn bản pháp lý',
+  'Mệnh':   'Bản thân, tính cách, cách cục tiên thiên',
+  'Huynh Đệ': 'Quan hệ anh em, tri kỷ, cộng sự',
+  'Phu Thê': 'Tình duyên, phối ngẫu, hôn nhân',
+  'Tử Tức': 'Duyên con cái, hậu bối, cấp dưới',
+  'Tài Bạch': 'Tài lộc, nguồn thu, phong cách quản lý tiền bạc',
+  'Tật Ách': 'Sức khỏe thể chất, bệnh tật, ách nạn',
+  'Thiên Di': 'Cơ hội xuất hành, giao tế xã hội, đối ngoại',
+  'Nô Bộc': 'Bạn bè, mạng lưới giao thiệp, quý nhân và tiểu nhân',
+  'Quan Lộc': 'Sự nghiệp, danh vọng, địa vị xã hội',
+  'Điền Trạch': 'Bất động sản, điền sản, gia đạo, cội nguồn gia đình',
+  'Phúc Đức': 'Đời sống tinh thần, nội tâm, phúc đức',
+  'Phụ Mẫu': 'Phụ mẫu, trưởng bối, giấy tờ văn bản pháp lý',
 };
 
 /** Render AI markdown: **【Title】** → gold header, **bold** → strong */

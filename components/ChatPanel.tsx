@@ -13,12 +13,12 @@ interface ChatPanelProps {
 }
 
 const PRESET_QUESTIONS = [
-  '我的整体命格如何？性格特点是什么？',
-  '我的感情婚姻运势如何？',
-  '我的事业财运如何？适合什么方向？',
-  '我现在的大限运势如何？',
-  '我的健康需要注意什么？',
-  '今年的流年运势如何？',
+  'Tổng quan mệnh cách của tôi thế nào? Tính cách đặc trưng là gì?',
+  'Vận trình tình cảm, hôn nhân của tôi ra sao?',
+  'Sự nghiệp và tài vận thế nào? Thích hợp hướng đi nào?',
+  'Vận thế đại hạn hiện tại của tôi ra sao?',
+  'Sức khỏe của tôi cần lưu ý những gì?',
+  'Vận trình lưu niên năm nay thế nào?',
 ];
 
 export default function ChatPanel({ chart }: ChatPanelProps) {
@@ -104,8 +104,8 @@ export default function ChatPanel({ chart }: ChatPanelProps) {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-8">
             <div className="text-4xl mb-3" style={{ color: 'var(--t-gold)', opacity: 0.15 }}>✦</div>
             <p className="text-xs leading-relaxed" style={{ color: 'var(--t-faint)' }}>
-              命盘已生成，可直接提问<br />
-              或从下方选择常见问题开始解读
+              Lá số đã được tạo lập, bạn có thể đặt câu hỏi trực tiếp<br />
+              hoặc chọn câu hỏi mẫu bên dưới để bắt đầu luận giải
             </p>
           </motion.div>
         )}
@@ -203,7 +203,7 @@ export default function ChatPanel({ chart }: ChatPanelProps) {
               color: 'var(--t-gold)',
             }}
           >
-            解读
+            Luận Giải
           </button>
         </div>
       </div>

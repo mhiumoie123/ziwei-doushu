@@ -44,7 +44,7 @@ function ThemeToggle() {
       onClick={toggle}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.93 }}
-      aria-label={isDark ? '切换亮色主题' : '切换暗色主题'}
+      aria-label={isDark ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối'}
       className="flex items-center gap-2 px-3 py-1.5 rounded-full border"
       style={{
         borderColor: isDark ? 'rgba(212,168,67,0.3)' : 'rgba(140,100,20,0.35)',
@@ -73,7 +73,7 @@ function ThemeToggle() {
           color: isDark ? 'rgba(212,180,100,0.85)' : 'rgba(110,72,8,0.8)',
           transition: 'color 0.35s ease',
         }}>
-        {isDark ? '暗色' : '亮色'}
+        {isDark ? 'Tối' : 'Sáng'}
       </span>
     </motion.button>
   );
@@ -81,55 +81,55 @@ function ThemeToggle() {
 
 // ─── 主星数据 ────────────────────────────────────────────
 const STARS = [
-  { name: '紫微' }, { name: '天机' }, { name: '太阳' }, { name: '武曲' },
-  { name: '天同' }, { name: '廉贞' }, { name: '天府' }, { name: '太阴' },
-  { name: '贪狼' }, { name: '巨门' }, { name: '天相' }, { name: '天梁' },
-  { name: '七杀' }, { name: '破军' },
+  { name: 'Tử Vi' }, { name: 'Thiên Cơ' }, { name: 'Thái Dương' }, { name: 'Vũ Khúc' },
+  { name: 'Thiên Đồng' }, { name: 'Liêm Trinh' }, { name: 'Thiên Phủ' }, { name: 'Thái Âm' },
+  { name: 'Tham Lang' }, { name: 'Cự Môn' }, { name: 'Thiên Tướng' }, { name: 'Thiên Lương' },
+  { name: 'Thất Sát' }, { name: 'Phá Quân' },
 ];
 
 // ─── 功能模块 ────────────────────────────────────────────
 const FEATURES = [
   {
-    tag: '排盘体系',
-    title: '倪海厦正宗\n紫微斗数',
-    subtitle: '非简化版，严格遵循Danh Sư Nghê Hải Hà传承',
+    tag: 'HỆ THỐNG AN SAO',
+    title: 'Chính Tông Nghê Hải Hà\nTử Vi Đẩu Số',
+    subtitle: 'Bản chuẩn xác, tuân thủ nghiêm ngặt truyền thừa của Danh Sư Nghê Hải Hà',
     points: [
-      '纳音五行局起盘，不采用网络简化算法',
-      '命宫逆数生时、身宫顺数生时，严格对齐教学规则',
-      '十四主星与四化飞星按原法推演，结构完整可复核',
+      'Khởi cục Nạp Âm Ngũ Hành, không dùng thuật toán đơn giản hóa trên mạng',
+      'Mệnh cung nghịch số sinh thời, Thân cung thuận số sinh thời, chuẩn xác quy tắc giảng dạy',
+      'Mười bốn chính tinh và Tứ Hóa phi tinh suy diễn theo nguyên pháp, kết cấu hoàn chỉnh có thể đối chiếu',
     ],
   },
   {
-    tag: '命盘呈现',
-    title: '完整十四主星\n四化飞星',
-    subtitle: '结构清晰，一眼看懂主轴与重点',
+    tag: 'GIAO DIỆN LÁ SỐ',
+    title: 'Trọn Bộ 14 Chính Tinh\nTứ Hóa Phi Tinh',
+    subtitle: 'Bố cục mạch lạc, nắm bắt tức thì trục chính và trọng điểm bản mệnh',
     points: [
-      '十四主星完整入宫，主星关系清楚可读',
-      '辅星与煞星同屏呈现，避免关键信息缺失',
-      '庙旺利陷亮度分级，快速识别强弱',
-      '点击任意主星即可查看倪海厦老师对该星的详细解读',
+      'Mười bốn chính tinh an vị rõ ràng, tương quan các sao minh bạch dễ đọc',
+      'Phụ tinh và Sát tinh hiển thị đồng bộ, không bỏ sót thông tin cốt lõi',
+      'Phân cấp độ sáng Miếu Vượng Đắc Hãm, nhận biết nhanh độ vượng suy',
+      'Nhấp vào bất kỳ chính tinh nào để xem luận giải chi tiết theo hệ thống Thầy Nghê Hải Hà',
     ],
   },
   {
-    tag: 'AI 解读',
-    title: '深度解盘\n不止于算',
-    subtitle: '倪海厦体系知识库 × Claude AI',
+    tag: 'AI LUẬN GIẢI',
+    title: 'Luận Giải Chuyên Sâu\nVượt Xa Bói Toán',
+    subtitle: 'Kho tri thức hệ thống Nghê Hải Hà × Trí Tuệ Nhân Tạo AI',
     points: [
-      '命格分析：从命宫主星出发，结合三方四正，给出全面的性格与人生格局判断',
-      '六大维度解读：事业方向、感情婚姻、财运模式、健康注意、家庭关系、子女缘分',
-      '大限流年追踪：当前10年大限重点、今年流年宫位的具体提示与行动建议',
-      '自由追问：针对你的命盘直接提问，「今年能换工作吗」「什么时候结婚运最好」',
+      'Phân tích mệnh cách: Xuất phát từ chính tinh cung Mệnh, kết hợp Tam phương Tứ chính đưa ra nhận định toàn diện về tính cách và cuộc đời',
+      'Luận giải 6 phương diện: Định hướng sự nghiệp, hôn nhân tình cảm, tài vận, sức khỏe, quan hệ gia đình, nhân duyên con cái',
+      'Theo dõi Đại hạn Lưu niên: Trọng điểm đại vận 10 năm hiện tại, lưu niên cung vị cùng gợi ý hành động cụ thể',
+      'Hỏi đáp tự do: Đặt câu hỏi trực tiếp trên lá số, ví dụ "Năm nay có nên đổi việc không?", "Khi nào vận kết hôn tốt nhất?"',
     ],
   },
   {
-    tag: '格局识别',
-    title: '自动检测\n命盘格局',
-    subtitle: '从星曜组合中发现你的命中注定',
+    tag: 'NHẬN DIỆN CÁCH CỤC',
+    title: 'Tự Động Nhận Diện\nCách Cục Mệnh Bàn',
+    subtitle: 'Khám phá thiên mệnh từ tổ hợp tinh diệu tinh tế',
     points: [
-      '自动识别11种经典格局：紫府同宫、杀破狼格、机月同梁、廉相格、武曲七杀等',
-      '辅弼夹命、日月夹命等特殊格局精准检测，并给出倪海厦体系下的标准解读',
-      '四化入命宫迁移宫的特殊状况自动标注，提示需关注的人生议题',
-      '格局按吉凶等级分层展示，让你一目了然自己命盘中的优势与挑战',
+      'Tự động nhận diện 11 cách cục kinh điển: Tử Phủ Đồng Cung, Sát Phá Lang, Cơ Nguyệt Đồng Lương, Liêm Tướng Cách, Vũ Khúc Thất Sát…',
+      'Phát hiện chính xác các cách cục đặc biệt như Phụ Bật Giáp Mệnh, Nhật Nguyệt Giáp Mệnh và diễn giải theo chuẩn hệ thống',
+      'Tự động ghi chú trường hợp Tứ Hóa nhập cung Mệnh, Thiên Di, nhắc nhở các chủ đề cuộc sống quan trọng',
+      'Phân tầng cách cục theo cát hung, giúp bạn nắm bắt tổng quan ưu thế và thử thách của bản mệnh',
     ],
   },
 ];
@@ -138,42 +138,42 @@ const FEATURES = [
 const SECTIONS = [
   {
     key: 'ziwei',
-    name: '紫微',
-    en: 'Zi Wei',
-    desc: '14 主星 · 13 宫位 · AI 解读',
+    name: 'Tử Vi',
+    en: 'Tử Vi',
+    desc: '14 Chính Tinh · 12 Cung Vị · Luận Giải AI',
     status: 'ready' as const,
-    when: '5 月',
-    icon: '◉',  // 实心圆+内点，紫微星视觉
+    when: 'Tháng 5',
+    icon: '◉',
     note: '',
   },
   {
     key: 'tianji',
-    name: '天纪',
+    name: 'Thiên Kỷ',
     en: 'Tian Ji',
-    desc: '紫微 · 周易 · 奇门遁甲',
+    desc: 'Tử Vi · Chu Dịch · Kỳ Môn Độn Giáp',
     status: 'soon' as const,
-    when: '6 月',
-    icon: '⊙',  // 圆+内点（古文"日"），与 ◉ 同字宽
+    when: 'Tháng 6',
+    icon: '⊙',
     note: '',
   },
   {
     key: 'diji',
-    name: '地纪',
+    name: 'Địa Kỷ',
     en: 'Di Ji',
-    desc: '倪师未竟之业 · 后辈补注',
+    desc: 'Di nguyện Thầy Nghê · Hậu bối bổ chú',
     status: 'soon' as const,
-    when: '6 月',
-    icon: '⊞',  // 方+井（地/田视觉），与 ⊙ 同字宽
-    note: '遗稿研读',
+    when: 'Tháng 6',
+    icon: '⊞',
+    note: 'Di Cảo',
   },
   {
     key: 'renji',
-    name: '人纪',
+    name: 'Nhân Kỷ',
     en: 'Ren Ji',
-    desc: '内经 · 伤寒 · 金匮 · 针灸',
+    desc: 'Nội Kinh · Thương Hàn · Kim Quỹ · Châm Cứu',
     status: 'soon' as const,
-    when: '7 月',
-    icon: '⊕',  // 圆+十字（医道/阴阳调和），与 ⊙/⊞ 同字宽
+    when: 'Tháng 7',
+    icon: '⊕',
     note: '',
   },
 ];
@@ -181,20 +181,20 @@ const SECTIONS = [
 // ─── 倪海厦核心教义 ──────────────────────────────────────
 const NI_TEACHINGS = [
   {
-    title: '命宫为本，三方为用',
-    body: '倪师始终强调，看命必先看命宫。命宫主星决定一个人的基本格局与天生性格，三方（财帛、官禄、迁移）则决定此人的「用武之地」。四宫联动才是完整的人生图景。',
+    title: 'Mệnh Cung Vi Bản, Tam Phương Vi Dụng',
+    body: 'Thầy Nghê luôn nhấn mạnh: xem mệnh nhất định phải xem cung Mệnh trước tiên. Chính tinh cung Mệnh quyết định cốt cách cơ bản và tính tình bẩm sinh, còn Tam phương (Tài Bạch, Quan Lộc, Thiên Di) quyết định vũ đài thi thố của người đó. Tứ cung liên kết mới tạo nên bức tranh hoàn chỉnh của một đời người.',
   },
   {
-    title: '对宫借星，不可忽视',
-    body: '倪师的独到之处在于重视「对宫」。任何宫位若为空宫，必须借对宫星曜来论断，命宫的对面是迁移宫，两者互相影响，这是很多初学者容易忽略的关键。',
+    title: 'Đối Cung Mượn Sao, Tuyệt Đối Không Xem Nhẹ',
+    body: 'Điểm độc đáo của Thầy Nghê là rất coi trọng "Đối cung". Bất kỳ cung nào là cung Vô Chính Diệu (cung trống) đều phải mượn sao của đối cung để luận đoán. Đối diện cung Mệnh là cung Thiên Di, hai cung tương hỗ ảnh hưởng sâu sắc, đây là mấu chốt mà nhiều người mới học dễ bỏ qua.',
   },
   {
-    title: '四化才是命运的手',
-    body: '星曜只是基础，四化（化禄、化权、化科、化忌）才是决定运势好坏的关键。同一颗星，有化禄与有化忌，人生轨迹可以截然不同。倪师反复强调：不看四化，命盘只解了一半。',
+    title: 'Tứ Hóa Mới Là Bàn Tay Của Số Phận',
+    body: 'Tinh diệu chỉ là nền tảng, Tứ Hóa (Hóa Lộc, Hóa Quyền, Hóa Khoa, Hóa Kỵ) mới là chìa khóa then chốt định đoạt vận thế cát hung. Cùng một vì sao, gặp Hóa Lộc hay Hóa Kỵ thì quỹ đạo đời người có thể hoàn toàn trái ngược. Thầy Nghê luôn nhắc nhở: Không xem Tứ Hóa, xem lá số mới được một nửa.',
   },
   {
-    title: '大限十年，运势有节',
-    body: '倪师将人生划分为12个大限，每个大限10年。他认为人在不同的大限宫位，际遇完全不同。了解自己现在走的是哪个大限、该宫位有何星曜，才能真正把握当下的运势。',
+    title: 'Đại Hạn Mười Năm, Vận Thế Có Tiết Tấu',
+    body: 'Thầy Nghê chia đời người thành các đại hạn, mỗi đại hạn 10 năm. Ở các cung đại hạn khác nhau, cơ duyên và thử thách của con người hoàn toàn khác nhau. Hiểu rõ bản thân đang đi vào đại hạn nào, cung đó có những sao gì mới thực sự nắm bắt được cơ hội của hiện tại.',
   },
 ];
 
@@ -250,28 +250,28 @@ function useColors(theme: Theme) {
 
 // ─── 四化简介数据 ─────────────────────────────────────────
 const SIHUA_BRIEF: Record<string, { attr: string; brief: string }> = {
-  '化禄': { attr: '吉化·增益', brief: '福星到宫，主财运与福气增益。所在宫位事物顺遂，能力增强，是命盘中最受欢迎的化星。' },
-  '化权': { attr: '吉化·权威', brief: '权力星到宫，主掌控与领导力。所在宫位主强势与决断，喜入官禄宫与命宫，主事业上的实权。' },
-  '化科': { attr: '吉化·名誉', brief: '科名星到宫，主声誉与贵人缘。所在宫位主文名与考运，有贵人扶持，宜学术、考试与公开场合。' },
-  '化忌': { attr: '凶化·阻碍', brief: '劫数星到宫，主执念与阻碍。所在宫位需特别关注，该宫人生课题将成为重要考验。' },
+  'Hóa Lộc': { attr: 'Cát Hóa · Tăng Ích', brief: 'Phúc tinh giáng cung, chủ về tài vận dồi dào và phúc khí gia tăng. Cung vị sở tại vạn sự hanh thông, năng lực nâng cao, là hóa tinh được hoan nghênh nhất.' },
+  'Hóa Quyền': { attr: 'Cát Hóa · Quyền Uy', brief: 'Quyền tinh giáng cung, chủ về quyền uy, tài nắm giữ và năng lực lãnh đạo. Cung vị sở tại chủ về quyết đoán, rất thích nhập cung Quan Lộc và Mệnh, chủ thực quyền sự nghiệp.' },
+  'Hóa Khoa': { attr: 'Cát Hóa · Danh Dự', brief: 'Khoa danh tinh giáng cung, chủ về thanh danh, danh tiếng và quý nhân phù trợ. Cung vị sở tại chủ văn chương khoa bảng, thi cử đỗ đạt, tốt cho học thuật và công chúng.' },
+  'Hóa Kỵ': { attr: 'Hung Hóa · Trở Ngại', brief: 'Kiếp số tinh giáng cung, chủ về chấp niệm, thị phi và trắc trở. Cung vị sở tại cần đặc biệt lưu tâm, bài học đời người tại đây sẽ là thử thách quan trọng.' },
 };
 
 // ─── 主星简介数据 ─────────────────────────────────────────
 const STAR_BRIEF: Record<string, { attr: string; brief: string }> = {
-  '紫微': { attr: '土·帝王星', brief: '天皇贵星，统御众星。坐命者有孤傲之气，主权威显达，天生具备领导气质，适合独当一面的领导岗位。' },
-  '天机': { attr: '木·智慧星', brief: '益寿星，主智谋与变动。聪慧机灵，善于筹谋，心思细腻，宜从事策划、顾问、技术类工作。' },
-  '太阳': { attr: '火·官禄主', brief: '官禄主星，主声誉与名望。慷慨大度，重视公众形象，利官场与公职，男命力强，入庙时光明磊落。' },
-  '武曲': { attr: '金·财帛主', brief: '财帛主星，主财务与决断。意志坚定，行动果敢，适合财务、金融、军警类职业，孤克之星，利晚婚。' },
-  '天同': { attr: '水·福星', brief: '福德主星，主享乐与人缘。性情温和，人缘极好，注重生活品质，感情细腻，晚年运势佳。' },
-  '廉贞': { attr: '火·才艺星', brief: '次桃花星，主才艺与情欲。才华出众，感情丰富，适合艺术、政界，多才多艺但需防桃花是非。' },
-  '天府': { attr: '土·财库星', brief: '南斗主星，主财库与积蓄。稳重保守，理财能力强，是命盘的稳定力量，适合管理财务与行政。' },
-  '太阴': { attr: '水·田宅主', brief: '田宅主星，主财富与阴柔。细腻温柔，感受力强，女命尤佳，利不动产与积蓄，适合文艺或服务业。' },
-  '贪狼': { attr: '木水·桃花', brief: '桃花星，主欲望与才艺。多才多艺，欲望旺盛，社交活跃，宜从事艺术、公关、商业，人缘极好。' },
-  '巨门': { attr: '水·是非星', brief: '暗星，主口才与是非。口才出众，思辨能力强，适合律师、教育、媒体，注意口舌是非，以辩才立身。' },
-  '天相': { attr: '水·印星', brief: '印星，主辅佐与印绶。善于协调，重视礼节，正直守法，适合幕僚、行政、法律类工作，贵人运佳。' },
-  '天梁': { attr: '土·荫星', brief: '荫星，主老成与荫蔽。正直稳重，慈悲心强，老天爷会保佑，适合医疗、社会工作、宗教领域。' },
-  '七杀': { attr: '金火·将星', brief: '将星，主刚烈与开创。性格刚毅，行动力强，勇于挑战，适合创业、军警、竞争性行业，逢凶化吉。' },
-  '破军': { attr: '水·耗星', brief: '耗星，主变动与开拓。勇于突破，不惧改变，一生变动大但有魄力，适合开拓型工作，走别人没走过的路。' },
+  'Tử Vi': { attr: 'Thổ · Đế Vương Tinh', brief: 'Đế tinh chí tôn, thống lĩnh quần tinh. Tọa Mệnh có khí chất tôn quý, cô cao, bẩm sinh mang phong thái lãnh đạo, thích hợp gánh vác trọng trách độc lập.' },
+  'Thiên Cơ': { attr: 'Mộc · Trí Tuệ Tinh', brief: 'Ích thọ tinh, chủ về trí mưu, quyền biến và linh hoạt. Thông minh cơ trí, mưu lược sâu sắc, thích hợp công tác hoạch định, cố vấn, sáng tạo và kỹ thuật.' },
+  'Thái Dương': { attr: 'Hỏa · Quan Lộc Chủ', brief: 'Quan lộc chủ tinh, chủ về quang minh, thanh danh và uy vọng. Hào sảng khoáng đạt, trọng thể diện, lợi cầu quan chức công danh, đắc địa thì quang minh lỗi lạc.' },
+  'Vũ Khúc': { attr: 'Kim · Tài Bạch Chủ', brief: 'Tài bạch chủ tinh, chủ về tiền tài, tài chính và sự quyết đoán. Ý chí kiên định, hành động quyết liệt, thích hợp tài chính, ngân hàng, quân cảnh.' },
+  'Thiên Đồng': { attr: 'Thủy · Phúc Tinh', brief: 'Phúc đức chủ tinh, chủ về hưởng lạc, hòa nhã và nhân duyên. Tính tình ôn hòa, nhân duyên cực tốt, coi trọng chất lượng cuộc sống, hậu vận an khang.' },
+  'Liêm Trinh': { attr: 'Hỏa · Tài Nghệ Tinh', brief: 'Thứ đào hoa tinh, chủ về tài hoa, nghệ thuật và quyền biến. Khí chất xuất chúng, tình cảm phong phú, thích hợp nghệ thuật, chính giới, cần đề phòng thị phi đào hoa.' },
+  'Thiên Phủ': { attr: 'Thổ · Tài Khố Tinh', brief: 'Nam đẩu lệnh tinh, chủ về kho tàng, tài lộc tích lũy và bao dung. Tính tình trầm ổn, quản lý tài chính giỏi, là trụ cột vững chắc của lá số.' },
+  'Thái Âm': { attr: 'Thủy · Điền Trạch Chủ', brief: 'Điền trạch chủ tinh, chủ về tích lũy, điền sản và sự dịu dàng. Tinh tế chu đáo, cảm nhận nhạy bén, nữ mệnh đắc cách, lợi về bất động sản và nghệ thuật.' },
+  'Tham Lang': { attr: 'Mộc Thủy · Đào Hoa', brief: 'Chính đào hoa tinh, chủ về dục vọng, tài nghệ và giao thiệp. Đa tài đa nghệ, năng động hoạt bát, giỏi kết giao, thích hợp kinh doanh, ngoại giao, nghệ thuật.' },
+  'Cự Môn': { attr: 'Thủy · Khẩu Thiệt Tinh', brief: 'Ám tinh, chủ về tài hùng biện, phân tích và khẩu tài. Hùng biện xuất sắc, tư duy phản biện sắc bén, thích hợp luật sư, giáo dục, truyền thông.' },
+  'Thiên Tướng': { attr: 'Thủy · Ấn Tinh', brief: 'Ấn tinh, chủ về phụ tá, giữ ấn và hòa giải. Khéo léo điều phối, trọng lễ nghĩa chính trực, thích hợp vai trò tham mưu, quản lý hành chính, pháp luật.' },
+  'Thiên Lương': { attr: 'Thổ · Ấm Tinh', brief: 'Thọ tinh ấm tinh, chủ về che chở, đức độ và trường thọ. Ngay thẳng trầm ổn, có lòng trắc ẩn cứu nhân độ thế, thường gặp hung hóa cát, được trời che chở.' },
+  'Thất Sát': { attr: 'Kim Hỏa · Tướng Tinh', brief: 'Tướng tinh khai quốc, chủ về dũng mãnh, quyết liệt và khai phá. Tính cách cương nghị, dám nghĩ dám làm, thích hợp lập nghiệp, quân cảnh, đối mặt thử thách.' },
+  'Phá Quân': { attr: 'Thủy · Hao Tinh', brief: 'Hao tinh tiên phong, chủ về biến động, đột phá và cải cách. Dũng cảm phá bỏ khuôn mẫu cũ, thích tiên phong mở lối đi riêng, cả đời nhiều biến chuyển ngoạn mục.' },
 };
 
 // ─── 功能视觉装饰 ────────────────────────────────────────
@@ -300,7 +300,7 @@ function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType
           })}
         </div>
         <p className="text-[10px] tracking-widest transition-colors duration-300"
-          style={{ color: c.textFaint }}>倪海厦排盘法</p>
+          style={{ color: c.textFaint }}>Phép An Sao Nghê Hải Hà</p>
       </div>
     );
   }
@@ -311,8 +311,8 @@ function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType
     return (
       <div className="flex flex-col gap-4 h-full justify-center">
         {[
-          { group: '紫微系', stars: ['紫微', '天机', '太阳', '武曲', '天同', '廉贞'] },
-          { group: '天府系', stars: ['天府', '太阴', '贪狼', '巨门', '天相', '天梁', '七杀', '破军'] },
+          { group: 'Hệ Tử Vi', stars: ['Tử Vi', 'Thiên Cơ', 'Thái Dương', 'Vũ Khúc', 'Thiên Đồng', 'Liêm Trinh'] },
+          { group: 'Hệ Thiên Phủ', stars: ['Thiên Phủ', 'Thái Âm', 'Tham Lang', 'Cự Môn', 'Thiên Tướng', 'Thiên Lương', 'Thất Sát', 'Phá Quân'] },
         ].map(group => (
           <div key={group.group}>
             <div className="text-[11px] tracking-widest mb-2 transition-colors duration-300"
@@ -338,9 +338,9 @@ function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType
         ))}
         <div>
           <div className="text-[11px] tracking-widest mb-2 transition-colors duration-300"
-            style={{ color: c.textFaint }}>四化飞星</div>
+            style={{ color: c.textFaint }}>Tứ Hóa Phi Tinh</div>
           <div className="flex gap-2 flex-wrap">
-            {[['化禄', 'rgba(52,211,153,0.7)'], ['化权', 'rgba(96,165,250,0.7)'], ['化科', 'rgba(250,204,21,0.7)'], ['化忌', 'rgba(248,113,113,0.7)']].map(([label, color]) => (
+            {[['Hóa Lộc', 'rgba(52,211,153,0.7)'], ['Hóa Quyền', 'rgba(96,165,250,0.7)'], ['Hóa Khoa', 'rgba(250,204,21,0.7)'], ['Hóa Kỵ', 'rgba(248,113,113,0.7)']].map(([label, color]) => (
               <motion.button key={label}
                 onClick={() => setSel(sel === label ? null : label)}
                 whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}
@@ -378,9 +378,9 @@ function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType
 
   if (index === 2) {
     const msgs = [
-      { role: 'user', text: '我今年的事业运势如何？' },
-      { role: 'ai', text: '命宫天机化禄，今年大限走官禄宫，三方有左辅相助，事业有贵人提携，适合主动拓展…' },
-      { role: 'user', text: '什么时候感情运最好？' },
+      { role: 'user', text: 'Vận trình sự nghiệp năm nay của tôi thế nào?' },
+      { role: 'ai', text: 'Cung Mệnh có Thiên Cơ Hóa Lộc, đại hạn năm nay nhập cung Quan Lộc, tam phương có Tả Phụ tương trợ, sự nghiệp được quý nhân nâng đỡ, thích hợp chủ động mở rộng…' },
+      { role: 'user', text: 'Khi nào nhân duyên kết hôn vượng nhất?' },
     ];
     return (
       <div className="flex flex-col gap-2 h-full justify-center">
@@ -406,9 +406,9 @@ function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType
 
   if (index === 3) {
     const patterns = [
-      { name: '杀破狼格', desc: '开创进取之命', ok: true },
-      { name: '廉相格',   desc: '行政印绶之格', ok: true },
-      { name: '化忌入命', desc: '需关注心理课题', ok: false },
+      { name: 'Sát Phá Lang', desc: 'Mệnh cách khai phá tiến thủ', ok: true },
+      { name: 'Liêm Tướng Cách', desc: 'Mệnh cách hành chính nắm ấn', ok: true },
+      { name: 'Hóa Kỵ Nhập Mệnh', desc: 'Cần chú trọng rèn luyện nội tâm', ok: false },
     ];
     return (
       <div className="flex flex-col gap-3 h-full justify-center">
@@ -431,7 +431,7 @@ function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType
           </motion.div>
         ))}
         <div className="text-[9px] mt-2 tracking-wider text-center" style={{ color: c.textFaint }}>
-          自动识别 11 种经典格局
+          Tự động nhận diện 11 cách cục kinh điển
         </div>
       </div>
     );
@@ -486,7 +486,7 @@ export default function HomePage() {
         }}>
         <div className="text-[11px] sm:text-xs tracking-[0.3em] sm:tracking-[0.4em] font-medium transition-colors duration-300 flex-shrink-0"
           style={{ color: c.goldSolid }}>
-          紫微命盘
+          TỬ VI ĐẨU SỐ
         </div>
         <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
           <ThemeToggle />
@@ -495,14 +495,14 @@ export default function HomePage() {
             onClick={() => router.push('/heming')}
             className="text-[11px] sm:text-xs px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full transition-all duration-300"
             style={{ border: `1px solid ${c.navBorder}`, color: c.textMuted }}>
-            合盘
+            Hợp Mệnh
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
             onClick={() => router.push('/chart')}
             className="text-[11px] sm:text-xs px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full transition-all duration-300"
             style={{ border: `1px solid ${c.goldLine}`, color: c.goldSolid }}>
-            立即起盘
+            Lập Lá Số Ngay
           </motion.button>
         </div>
       </nav>
@@ -528,10 +528,10 @@ export default function HomePage() {
             <h1
               className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'} font-bold leading-none mb-5`}
               style={{
-                fontSize: 'clamp(56px, 10vw, 124px)',
+                fontSize: 'clamp(44px, 8vw, 108px)',
                 letterSpacing: '0.07em',
               }}>
-              紫微命盘
+              TỬ VI ĐẨU SỐ
             </h1>
           </motion.div>
 
@@ -563,7 +563,7 @@ export default function HomePage() {
               onClick={() => router.push('/chart')}
               className="px-12 py-4 font-semibold text-base tracking-widest rounded-full"
               style={{ background: c.ctaBg, color: c.ctaText }}>
-              立即起盘
+              Lập Lá Số Ngay
             </motion.button>
           </motion.div>
 
@@ -605,12 +605,11 @@ export default function HomePage() {
           }}>
             <div style={{ fontSize: '20px', marginBottom: '6px', lineHeight: 1 }}>🎁</div>
             <div style={{ fontSize: '13px', lineHeight: 1.7, color: '#8b3a1a', fontWeight: 500 }}>
-              <span style={{ color: '#c45a2d', fontWeight: 700, fontSize: '14px' }}>5/1 — 5/8</span>
-              <span> 限时回馈</span>
+              <span style={{ color: '#c45a2d', fontWeight: 700, fontSize: '14px' }}>Quà Tặng Tri Ân</span>
             </div>
             <div style={{ fontSize: '13px', lineHeight: 1.7, color: '#8b3a1a', fontWeight: 500 }}>
-              全部功能 + AI 提问
-              <strong style={{ color: '#c45a2d' }}> 全免费</strong>
+              Toàn Bộ Tính Năng & AI
+              <strong style={{ color: '#c45a2d' }}> Hoàn Toàn Miễn Phí</strong>
             </div>
           </div>
         </motion.div>
@@ -636,11 +635,10 @@ export default function HomePage() {
           }}>
             <div style={{ fontSize: '18px', marginBottom: '4px', lineHeight: 1 }}>🎁</div>
             <div style={{ fontSize: '12px', lineHeight: 1.7, color: '#8b3a1a', fontWeight: 500 }}>
-              <span style={{ color: '#c45a2d', fontWeight: 700, fontSize: '13px' }}>5/1 — 5/8</span>
-              <span> 限时回馈</span>
+              <span style={{ color: '#c45a2d', fontWeight: 700, fontSize: '13px' }}>Quà Tặng Tri Ân</span>
             </div>
             <div style={{ fontSize: '12px', lineHeight: 1.7, color: '#8b3a1a', fontWeight: 500 }}>
-              全部功能 + AI <strong style={{ color: '#c45a2d' }}>全免费</strong>
+              Toàn Bộ Tính Năng & AI <strong style={{ color: '#c45a2d' }}>Miễn Phí</strong>
             </div>
           </div>
         </motion.div>
@@ -649,7 +647,7 @@ export default function HomePage() {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           transition={{ delay: 2, duration: 1 }}
           className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-2 pointer-events-none">
-          <span className="text-[9px] tracking-[0.4em] uppercase" style={{ color: c.scrollText }}>探索更多</span>
+          <span className="text-[9px] tracking-[0.4em] uppercase" style={{ color: c.scrollText }}>KHÁM PHÁ THÊM</span>
           <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
             className="w-px h-8" style={{ background: `linear-gradient(to bottom, ${c.scrollLine}, transparent)` }} />
         </motion.div>
@@ -886,16 +884,16 @@ export default function HomePage() {
                 Thiên · Địa · Nhân
               </h2>
               <p className="max-w-2xl mx-auto text-sm leading-relaxed" style={{ color: c.textSecond }}>
-                倪海厦老师的核心命运观：命运从来不是人生的全部。<br />
-                他将影响人生的力量分为三个同等重要的维度。
+                Quan điểm cốt lõi của Thầy Nghê Hải Hà: Vận mệnh không bao giờ là toàn bộ cuộc đời.<br />
+                Thầy phân định sức mạnh ảnh hưởng tới đời người thành ba chiều kích quan trọng ngang nhau.
               </p>
             </div>
           </FadeIn>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
             {[
-              { glyph: '天', label: 'Mệnh Tiên Thiên', pct: '⅓', color: c.goldSolid, borderColor: c.goldLine, desc: 'Tử Vi Đẩu Số hé lộ khung mẫu mệnh bàn Tiên Thiên — bố cục tinh diệu, ngũ hành cục số, chủ tinh cung Mệnh. Đây là 1/3 vận số, là bức phông nền của đời người chứ không phải toàn bộ.', sub: '命盘 · 星曜 · 五行' },
-              { glyph: '地', label: 'Địa Lý Môi Trường', pct: '⅓', color: 'rgba(96,165,250,0.9)', borderColor: 'rgba(96,165,250,0.3)', desc: 'Môi trường địa lý, thành phố sinh sống, phong thủy nhà ở, nền tảng gia đình và xã hội tạo nên chiều kích thứ hai. Cùng một lá số, sinh trưởng ở môi trường khác nhau sẽ có cảnh ngộ khác biệt.', sub: '地域 · 风水 · 环境' },
-              { glyph: '人', label: 'Nhân Tâm Ý Chí', pct: '⅓', color: 'rgba(100,216,139,0.9)', borderColor: 'rgba(100,216,139,0.3)', desc: 'Ý chí, tâm thái, sự lựa chọn và hành động của bản thân là sức mạnh chủ động nhất. Hiểu lá số là để hoàn thiện nhân cách, không phải để thụ động ngồi chờ; tinh tấn tu dưỡng mới là đạo phá cục.', sub: '意志 · 选择 · 行动' },
+              { glyph: '天', label: 'Mệnh Tiên Thiên', pct: '⅓', color: c.goldSolid, borderColor: c.goldLine, desc: 'Tử Vi Đẩu Số hé lộ khung mẫu mệnh bàn Tiên Thiên — bố cục tinh diệu, ngũ hành cục số, chủ tinh cung Mệnh. Đây là 1/3 vận số, là bức phông nền của đời người chứ không phải toàn bộ.', sub: 'Lá Số · Tinh Diệu · Ngũ Hành' },
+              { glyph: '地', label: 'Địa Lý Môi Trường', pct: '⅓', color: 'rgba(96,165,250,0.9)', borderColor: 'rgba(96,165,250,0.3)', desc: 'Môi trường địa lý, thành phố sinh sống, phong thủy nhà ở, nền tảng gia đình và xã hội tạo nên chiều kích thứ hai. Cùng một lá số, sinh trưởng ở môi trường khác nhau sẽ có cảnh ngộ khác biệt.', sub: 'Địa Phương · Phong Thủy · Môi Trường' },
+              { glyph: '人', label: 'Nhân Tâm Ý Chí', pct: '⅓', color: 'rgba(100,216,139,0.9)', borderColor: 'rgba(100,216,139,0.3)', desc: 'Ý chí, tâm thái, sự lựa chọn và hành động của bản thân là sức mạnh chủ động nhất. Hiểu lá số là để hoàn thiện nhân cách, không phải để thụ động ngồi chờ; tinh tấn tu dưỡng mới là đạo phá cục.', sub: 'Ý Chí · Lựa Chọn · Hành Động' },
             ].map((item, i) => (
               <FadeIn key={item.glyph} delay={0.1 + i * 0.12}>
                 <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.1 }}
@@ -923,7 +921,7 @@ export default function HomePage() {
               <p className="text-sm leading-relaxed" style={{ color: c.textSecond }}>
                 « Vận mệnh tiên thiên không phải toàn bộ cuộc đời, kết hợp cùng địa lý và nhân tâm mới trọn vẹn. »
               </p>
-              <p className="mt-2 text-[10px] tracking-widest" style={{ color: c.tagText }}>— 倪海厦</p>
+              <p className="mt-2 text-[10px] tracking-widest" style={{ color: c.tagText }}>— Nghê Hải Hà</p>
             </div>
           </FadeIn>
         </div>
@@ -937,16 +935,16 @@ export default function HomePage() {
             <div className="text-center mb-10">
               <div className="flex items-center justify-center gap-3 mb-6">
                 <div className="h-px w-12" style={{ background: `linear-gradient(to right, transparent, ${c.goldLine})` }} />
-                <span className="text-[10px] tracking-[0.5em] uppercase" style={{ color: c.tagText }}>Master · 1953 – 2012</span>
+                <span className="text-[10px] tracking-[0.5em] uppercase" style={{ color: c.tagText }}>Danh Sư · 1954 – 2012</span>
                 <div className="h-px w-12" style={{ background: `linear-gradient(to left, transparent, ${c.goldLine})` }} />
               </div>
               <h2 className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'} font-bold mb-6 tracking-tight`}
                 style={{ fontSize: 'clamp(32px, 4vw, 48px)' }}>
-                倪海厦老师
+                Danh Sư Nghê Hải Hà
               </h2>
               <p className="max-w-2xl mx-auto leading-relaxed text-sm" style={{ color: c.textSecond }}>
-                当代华人圈最具影响力的中医与术数大家之一<br />
-                美国汉唐中医学院创办人 ·「人纪」「天纪」两大教学体系传世
+                Một trong những đại sư Trung y và thuật số có tầm ảnh hưởng sâu rộng nhất giới người Hoa đương đại<br />
+                Sáng lập Học viện Trung y Hán Đường tại Hoa Kỳ · Để lại hai bộ đại hệ thống giảng dạy «Nhân Kỷ» và «Thiên Kỷ»
               </p>
             </div>
           </FadeIn>
@@ -956,9 +954,9 @@ export default function HomePage() {
               style={{ border: `1px solid ${c.niBorder}`, background: c.niBg, boxShadow: c.cardShadow }}>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 {[
-                  { label: '生于', value: '1954年', sub: '台湾' },
-                  { label: '离世', value: '2012年', sub: '1月31日 · 享年58' },
-                  { label: '传承', value: '紫微斗数', sub: '经方中医 · 易经' },
+                  { label: 'Sinh Năm', value: '1954', sub: 'Đài Loan' },
+                  { label: 'Tạ Thế', value: '2012', sub: '31 tháng 1 · Hưởng thọ 58' },
+                  { label: 'Truyền Thừa', value: 'Tử Vi Đẩu Số', sub: 'Kinh Phương Y Đạo · Chu Dịch' },
                 ].map(item => (
                   <div key={item.label} className="text-center rounded-xl px-4 py-3"
                     style={{ border: `1px solid ${c.niDivider}`, background: 'rgba(255,255,255,0.02)' }}>
@@ -971,38 +969,36 @@ export default function HomePage() {
               <div className="h-px mb-8" style={{ background: c.niDivider }} />
               <div className="space-y-4 text-sm leading-relaxed max-w-3xl mx-auto" style={{ color: c.textSecond }}>
                 <p>
-                  <strong style={{ color: c.goldSolid }}>生平履历</strong>：
-                  倪海厦先生（1954–2012）出生于台湾，早年师承多位中医名家，专研经方派（《伤寒论》传承）。
-                  中年赴美行医，在美国创立<strong>汉唐中医学院</strong>，二十余年间系统传授中医与传统术数。
-                  2012 年 1 月 31 日因肝癌在台湾离世，享年 58 岁。
+                  <strong style={{ color: c.goldSolid }}>Tiểu Sử Sinh Bình</strong>:
+                  Thầy Nghê Hải Hà (1954–2012) sinh tại Đài Loan, thời trẻ theo học nhiều danh gia Trung y, chuyên sâu phái Kinh Phương (truyền thừa từ Thương Hàn Luận).
+                  Trung niên sang Mỹ hành nghề y, sáng lập <strong>Học viện Trung Y Hán Đường</strong> tại Mỹ, hơn 20 năm hệ thống hóa và truyền dạy Trung y cùng thuật số cổ truyền.
+                  Ngày 31 tháng 1 năm 2012, Thầy tạ thế vì bệnh gan tại Đài Loan, hưởng thọ 58 tuổi.
                 </p>
                 <p>
-                  <strong style={{ color: c.goldSolid }}>教学体系</strong>：
-                  倪师将毕生所学整理为两大公开教学系列。
-                  <strong>「人纪」</strong>涵盖《针灸大成》《神农本草经》《黄帝内经》《伤寒论》《金匮要略》——
-                  这是「人之纪」，奠定中医学习的完整路径；
-                  <strong>「天纪」</strong>涵盖紫微斗数与《易经》——这是「天之纪」，是术数研究的体系化成果。
-                  两者相合，是倪师留给后世最完整的传承。
+                  <strong style={{ color: c.goldSolid }}>Hệ Thống Giảng Dạy</strong>:
+                  Thầy Nghê đúc kết sở học cả đời thành hai bộ đại hệ thống giảng dạy công khai:
+                  <strong>«Nhân Kỷ»</strong> bao quát Châm Cứu Đại Thành, Thần Nông Bản Thảo Kinh, Hoàng Đế Nội Kinh, Thương Hàn Luận, Kim Quỹ Yếu Lược — đây là "Kỷ của Người", đặt nền tảng học tập Trung y hoàn chỉnh;
+                  <strong>«Thiên Kỷ»</strong> bao quát Tử Vi Đẩu Số và Chu Dịch — đây là "Kỷ của Trời", thành quả hệ thống hóa nghiên cứu thuật số cổ truyền.
+                  Hai bộ kết hợp chính là di sản vĩ đại nhất Thầy để lại cho hậu thế.
                 </p>
                 <p>
-                  <strong style={{ color: c.goldSolid }}>紫微立场</strong>：
-                  倪师在紫微斗数上明确属<strong>南派三合派</strong>，主张「以命宫为本、以三方四正为用、以四化为纲」。
-                  他在《天纪》课程中明言：「<em>飞星（四化）飞来飞去太复杂，不搞这个，毕竟大道至简</em>」——
-                  这一立场将其与繁琐的飞星派清晰区分。
+                  <strong style={{ color: c.goldSolid }}>Lập Trường Tử Vi</strong>:
+                  Thầy Nghê trong Tử Vi Đẩu Số thuộc phái <strong>Tam Hợp Nam Phái</strong> rõ ràng, chủ trương "lấy cung Mệnh làm gốc, lấy Tam phương Tứ chính làm dụng, lấy Tứ Hóa làm cương lĩnh".
+                  Trong giáo trình Thiên Kỷ, Thầy từng nói: "<em>Phi tinh (Tứ Hóa) bay qua bay lại quá phức tạp, không làm trò đó, bởi vì Đại đạo chí giản</em>" —
+                  lập trường này phân biệt rõ ràng phương pháp của Thầy với phái Phi Tinh rườm rà.
                 </p>
                 <p>
-                  <strong style={{ color: c.goldSolid }}>治学态度</strong>：
-                  倪师反对死记硬背口诀，强调「理解原理胜过背诵」「逻辑可复核胜过神秘玄学」。
-                  这种态度让紫微斗数从师徒密传的封闭体系，走向系统化、可验证、可学习的现代知识体系。
+                  <strong style={{ color: c.goldSolid }}>Thái Độ Học Thuật</strong>:
+                  Thầy Nghê phản đối việc học vẹt khẩu quyết, nhấn mạnh "hiểu rõ nguyên lý hơn là học thuộc lòng", "logic có thể kiểm chứng hơn là huyền học huyền bí".
+                  Thái độ khoa học này đã đưa Tử Vi Đẩu Số từ bí truyền sư đồ khép kín trở thành một hệ thống tri thức hiện đại, có hệ thống và có thể kiểm chứng.
                 </p>
                 <p>
-                  <strong style={{ color: c.goldSolid }}>当代影响</strong>：
-                  倪师的讲课视频在 B 站、YouTube 与各大平台广泛流传，是新一代命理与中医爱好者公认的入门必修。
-                  他不仅是紫微斗数的传承者，更是把传统命理与中医带入现代知识体系的关键人物之一。
+                  <strong style={{ color: c.goldSolid }}>Tầm Ảnh Hưởng Đương Đại</strong>:
+                  Các video giảng dạy của Thầy Nghê được lan truyền rộng rãi trên YouTube, Bilibili và nhiều nền tảng, là bài học vỡ lòng kinh điển cho thế hệ người yêu thích lý số và Trung y.
+                  Thầy không chỉ là người truyền thừa mà còn là nhân vật then chốt đưa lý số cổ truyền và Trung y hòa nhập vào hệ tri thức hiện đại.
                 </p>
                 <p style={{ fontSize: '11px', color: c.textMuted, fontStyle: 'italic', marginTop: '12px' }}>
-                  本平台所有解读基于倪师《天纪》公开教学讲义、《紫微斗数全书》明版、传统三合派古籍整理而成，
-                  仅作文化与个人成长参考。倪师本人与本平台无任何商业关联。
+                  Toàn bộ luận giải trên nền tảng này được tổng hợp dựa trên giáo trình công khai Thiên Kỷ của Thầy Nghê, bản khắc thời Minh của Tử Vi Đẩu Số Toàn Thư và cổ tịch phái Tam Hợp truyền thống, chỉ mang tính chất tham khảo văn hóa và phát triển bản thân. Bản thân Thầy Nghê không có bất kỳ liên hệ thương mại nào với nền tảng này.
                 </p>
               </div>
             </div>
@@ -1049,8 +1045,8 @@ export default function HomePage() {
                 Tử Vi Hợp Bàn (So Đôi Lá Số)
               </h2>
               <p className="text-sm leading-relaxed mb-8 max-w-lg mx-auto" style={{ color: c.textSecond }}>
-                输入两个人的出生信息，AI 基于倪海厦体系分析夫妻宫互参、命宫兼容性与三方四正交互，<br className="hidden md:block" />
-                给出感情匹配度、合伙可行性与最佳相处建议。
+                Nhập thông tin ngày giờ sinh của hai người, AI dựa trên hệ thống Nghê Hải Hà phân tích cung Phu Thê tương tham, độ tương thích cung Mệnh và tương tác Tam phương Tứ chính,<br className="hidden md:block" />
+                đưa ra đánh giá độ hòa hợp tình cảm, khả năng hợp tác và lời khuyên ứng xử tối ưu.
               </p>
               <div className="flex justify-center gap-3 flex-wrap mb-6">
                 {['Tương hợp tình duyên', 'Đánh giá hợp tác làm ăn', 'Luận giải duyên phận gia đạo', 'Độ hòa hợp tiền hôn nhân'].map(item => (
@@ -1090,15 +1086,15 @@ export default function HomePage() {
             Lá Số Tử Vi Của Bạn<br />Đang Chờ Khai Mở
           </h2>
           <p className="text-sm mb-10 max-w-md mx-auto leading-relaxed" style={{ color: c.textSecond }}>
-            输入出生年月日时，在几秒内生成你的专属命盘<br />
-            再由 AI 按倪海厦体系为你深度解读
+            Nhập ngày tháng năm giờ sinh, chỉ trong vài giây tạo lập lá số độc bản của bạn<br />
+            Sau đó để AI theo hệ thống Nghê Hải Hà luận giải sâu sắc cho bạn
           </p>
           <motion.button
             whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
             onClick={() => router.push('/chart')}
             className="px-14 py-4 font-semibold text-base tracking-widest rounded-full"
             style={{ background: c.ctaBg, color: c.ctaText }}>
-            免费起盘
+            Lập Lá Số Miễn Phí
           </motion.button>
           <div className="mt-4 flex flex-wrap gap-3 justify-center">
             <motion.a
@@ -1111,7 +1107,7 @@ export default function HomePage() {
                 background: 'transparent',
                 textDecoration: 'none',
               }}>
-              ✦ 紫微斗数知识库 →
+              ✦ Kho Tri Thức Tử Vi →
             </motion.a>
             <motion.a
               href="/library"
@@ -1123,7 +1119,7 @@ export default function HomePage() {
                 background: 'transparent',
                 textDecoration: 'none',
               }}>
-              📜 古籍原典库 →
+              📜 Kho Điển Tịch Cổ →
             </motion.a>
           </div>
         </FadeIn>
@@ -1137,7 +1133,7 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto mb-8">
           <div className="text-[9px] tracking-[0.3em] text-center mb-4 uppercase"
             style={{ color: c.textMuted, opacity: 0.6 }}>
-            倪师方法论 · 学术体系
+            PHƯƠNG PHÁP LUẬN NGHÊ SƯ · HỆ THỐNG HỌC THUẬT
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
             {SECTIONS.map(s => {
@@ -1162,7 +1158,7 @@ export default function HomePage() {
                   </div>
                   <div className="text-[9px] tracking-wider"
                     style={{ color: ready ? '#10b981' : c.textMuted }}>
-                    {ready ? '✓ 已上线' : `${s.when} 开放`}
+                    {ready ? '✓ Đã Ra Mắt' : `${s.when} Mở`}
                   </div>
                 </a>
               );
@@ -1172,17 +1168,17 @@ export default function HomePage() {
 
         <div className="text-center">
           <p className="text-[10px] tracking-wider mb-3" style={{ color: c.footerText }}>
-            紫微命盘 · 基于倪海厦正宗体系 · 仅供参考，命运掌握在自己手中
+            Tử Vi Đẩu Số · Dựa trên hệ thống chính tông Nghê Hải Hà · Chỉ mang tính tham khảo, vận mệnh nằm trong tay chính bạn
           </p>
           <p className="text-[10px] tracking-wider mb-3 max-w-2xl mx-auto leading-relaxed"
             style={{ color: c.footerText, opacity: 0.85 }}>
-            本平台基于中国传统文化研究，仅提供学习参考。<br className="sm:hidden" />
-            不构成任何医疗、投资、法律或重大决策建议。
+            Nền tảng này dựa trên nghiên cứu văn hóa truyền thống, chỉ cung cấp góc nhìn tham khảo học thuật.<br className="sm:hidden" />
+            Không cấu thành bất kỳ lời khuyên y tế, đầu tư, pháp lý hay quyết định trọng đại nào.
           </p>
           <p className="text-[10px] tracking-wider" style={{ color: c.footerText }}>
-            <a href="/terms" style={{ color: c.footerText, textDecoration: 'underline' }}>服务条款</a>
+            <a href="/terms" style={{ color: c.footerText, textDecoration: 'underline' }}>Điều khoản dịch vụ</a>
             {' · '}
-            <a href="/privacy" style={{ color: c.footerText, textDecoration: 'underline' }}>隐私政策</a>
+            <a href="/privacy" style={{ color: c.footerText, textDecoration: 'underline' }}>Chính sách bảo mật</a>
           </p>
         </div>
       </footer>

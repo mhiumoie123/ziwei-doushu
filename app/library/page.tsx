@@ -10,7 +10,7 @@ import LibrarySearch from './LibrarySearch';
 
 export const metadata = {
   title: 'Phương Pháp Luận Nghê Sư · Kho Điển Tịch Cổ · 紫微斗数全集 / 全书 / 骨髓赋',
-  description: '紫微斗数权威古籍全文检索：《紫微斗数全集》《紫微斗数全书》《骨髓赋》倪海厦《天纪》引证来源',
+  description: 'Tra cứu toàn văn các điển tịch Tử Vi Đẩu Số uy tín：《紫微斗数全集》《紫微斗数全书》《骨髓赋》倪海厦《天纪》引证来源',
 };
 
 export default function LibraryHomePage() {
@@ -38,11 +38,11 @@ export default function LibraryHomePage() {
           <div style={{ height: '1px', width: '48px', background: 'linear-gradient(to left, transparent, rgba(184,146,42,0.4))' }} />
         </div>
         <h1 style={{ fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 700, color: 'var(--tx-0)', letterSpacing: '0.15em', marginBottom: '12px' }}>
-          倪师方法论 · 古籍原典库
+          PHƯƠNG PHÁP LUẬN NGHÊ SƯ · KHO ĐIỂN TỊCH CỔ
         </h1>
         <p style={{ fontSize: '14px', color: 'var(--tx-2)', letterSpacing: '0.1em', maxWidth: '600px', margin: '0 auto', lineHeight: 1.7 }}>
           紫微斗数权威古籍全文检索<br />
-          收录 <strong style={{ color: 'var(--ac)' }}>{ALL_BOOKS.length}</strong> 部古籍 · 共 <strong style={{ color: 'var(--ac)' }}>{TOTAL_PARAGRAPHS}</strong> 段精华
+          Thu thập <strong style={{ color: 'var(--ac)' }}>{ALL_BOOKS.length}</strong> bộ cổ tịch · Tổng cộng <strong style={{ color: 'var(--ac)' }}>{TOTAL_PARAGRAPHS}</strong> đoạn tinh hoa
         </p>
       </div>
 

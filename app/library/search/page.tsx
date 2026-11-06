@@ -22,7 +22,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
           ← Kho Điển Tịch
         </Link>
         <div style={{ fontSize: '12px', color: 'var(--tx-3)', letterSpacing: '0.2em' }}>
-          搜索结果
+          Kết quả tìm kiếm
         </div>
         <Link href="/" style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.2em', textDecoration: 'none' }}>
           Trang chủ →
@@ -56,8 +56,8 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
               <>
                 <div style={{ fontSize: '14px', marginBottom: '6px' }}>Chưa tìm thấy từ khóa này trong các điển tịch đã thu thập</div>
                 <div style={{ fontSize: '11px', color: 'var(--tx-3)', lineHeight: 1.7 }}>
-                  我们持续补充内容中。可尝试搜索：<br />
-                  <span style={{ color: 'var(--ac)' }}>七杀朝斗 / 双禄朝垣 / 化忌 / 紫微 / 命宫 / 机月同梁</span>
+                  Hệ thống đang liên tục cập nhật thêm. Bạn có thể thử tìm kiếm:<br />
+                  <span style={{ color: 'var(--ac)' }}>Thất Sát Triều Đẩu / Song Lộc Triều Viên / Hóa Kỵ / Tử Vi / Mệnh Cung / Cơ Nguyệt Đồng Lương</span>
                 </div>
               </>
             ) : (

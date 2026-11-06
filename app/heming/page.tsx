@@ -193,7 +193,7 @@ export default function HemingPage() {
         <div style={{ textAlign: 'center', marginBottom: '36px' }}>
           <div style={{ fontSize: '28px', color: 'var(--ac)', opacity: 0.15, marginBottom: '12px' }}>☯</div>
           <h1 style={{ fontSize: '22px', fontWeight: 600, letterSpacing: '0.15em', color: 'var(--tx-0)', marginBottom: '8px' }}>
-            紫微合盘
+            HỢP MỆNH TỬ VI (SO ĐÔI LÁ SỐ)
           </h1>
           <p style={{ fontSize: '13px', color: 'var(--tx-3)', lineHeight: 1.6 }}>
             Nhập thông tin ngày giờ sinh của hai người. AI phân tích chuyên sâu mức độ tương hợp duyên phận, xu hướng tình cảm và lời khuyên ứng xử dựa trên hệ thống Tử Vi chính tông Nghê Hải Hà.
@@ -243,8 +243,8 @@ export default function HemingPage() {
           {!analysis && !analyzing && (
             <div style={{ textAlign: 'center', padding: '32px 0' }}>
               <div style={{ fontSize: '13px', color: 'var(--tx-3)', marginBottom: '24px', lineHeight: 1.7 }}>
-                填好双方出生信息后，点击下方按钮<br />
-                AI 将基于倪海厦体系深度分析两人缘分匹配度
+                Điền thông tin ngày giờ sinh của hai bên, sau đó nhấn nút bên dưới<br />
+                AI sẽ phân tích chuyên sâu mức độ tương hợp duyên phận dựa trên hệ thống Nghê Hải Hà
               </div>
               <button
                 onClick={() => runAnalysis()}
@@ -301,11 +301,11 @@ export default function HemingPage() {
             {/* 快捷问题 */}
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               {[
-                '感情匹配度如何？',
-                '适合合伙创业吗？',
-                '两人结婚是否合适？',
-                '哪方面最容易产生矛盾？',
-                '财运是否互补？',
+                'Độ tương hợp tình cảm ra sao?',
+                'Có thích hợp cùng nhau khởi nghiệp không?',
+                'Hai người tiến tới hôn nhân có thuận không?',
+                'Phương diện nào dễ phát sinh mâu thuẫn nhất?',
+                'Tài vận hai bên có bổ trợ cho nhau không?',
               ].map(q => (
                 <button
                   key={q}
