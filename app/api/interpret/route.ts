@@ -67,75 +67,21 @@ YÊU CẦU TRÌNH BÀY:
 3. Luôn đưa ra lời khuyên thực tế, mang tính khai mở trí tuệ và khích lệ mệnh chủ.`;
 }
 
-interface AIConfig {
-  url: string;
-  key: string;
-  model: string;
-  isAnthropic?: boolean;
-}
-
-function resolveAIConfig(): AIConfig | null {
-  // 1. Google Gemini (khuyên dùng, có API key miễn phí tại Google AI Studio)
-  if (process.env.GEMINI_API_KEY) {
-    return {
-      url: 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',
-      key: process.env.GEMINI_API_KEY,
-      model: process.env.GEMINI_MODEL || 'gemini-3.8-flash',
-    };
-  }
-
-  // 2. DeepSeek
-  if (process.env.DEEPSEEK_API_KEY) {
-    return {
-      url: 'https://api.deepseek.com/v1/chat/completions',
-      key: process.env.DEEPSEEK_API_KEY,
-      model: process.env.DEEPSEEK_MODEL || 'deepseek-chat',
-    };
-  }
-
-  // 3. OpenAI
-  if (process.env.OPENAI_API_KEY) {
-    return {
-      url: process.env.OPENAI_BASE_URL ? `${process.env.OPENAI_BASE_URL.replace(/\/+$/, '')}/chat/completions` : 'https://api.openai.com/v1/chat/completions',
-      key: process.env.OPENAI_API_KEY,
-      model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
-    };
-  }
-
-  // 4. Generic OpenAI compatible (Groq, OpenRouter, v.v.)
-  if (process.env.AI_API_KEY && process.env.AI_BASE_URL) {
-    return {
-      url: `${process.env.AI_BASE_URL.replace(/\/+$/, '')}/chat/completions`,
-      key: process.env.AI_API_KEY,
-      model: process.env.AI_MODEL || 'gpt-4o-mini',
-    };
-  }
-
-  // 5. Claude (Anthropic)
-  if (process.env.ANTHROPIC_API_KEY) {
-    return {
-      url: 'https://api.anthropic.com/v1/messages',
-      key: process.env.ANTHROPIC_API_KEY,
-      model: process.env.ANTHROPIC_MODEL || 'claude-3-5-haiku-20241022',
-      isAnthropic: true,
-    };
-  }
-
-  return null;
-}
-
 export async function POST(req: Request) {
   try {
     const { chart, messages = [] } = await req.json();
 
-    const config = resolveAIConfig();
-    if (!config) {
-      // Chưa cấu hình API Key: trả về stream thông báo hướng dẫn thay vì 404
+    const geminiKey = process.env.GEMINI_API_KEY;
+    const deepseekKey = process.env.DEEPSEEK_API_KEY;
+    const openaiKey = process.env.OPENAI_API_KEY;
+    const aiKey = process.env.AI_API_KEY;
+    const anthropicKey = process.env.ANTHROPIC_API_KEY;
+
+    if (!geminiKey && !deepseekKey && !openaiKey && !aiKey && !anthropicKey) {
       const guideText = `**【Chưa Cấu Hình AI API Key】**\n\n` +
         `Để kích hoạt tính năng AI luận giải tự động:\n\n` +
-        `1. **Lấy API Key Miễn Phí**: Bạn có thể tạo Google Gemini API Key hoàn toàn miễn phí tại **https://aistudio.google.com/apikey** (hoặc dùng DeepSeek / OpenAI / Claude).\n` +
-        `2. **Gắn vào Vercel**: Vào trang quản trị Vercel → Project Settings → **Environment Variables**, thêm biến \`GEMINI_API_KEY\` với giá trị API Key của bạn.\n` +
-        `3. **Nếu chạy trên VPS/Local**: Thêm dòng \`GEMINI_API_KEY=your_api_key\` vào file \`.env.local\` rồi khởi động lại ứng dụng.\n\n` +
+        `1. **Lấy API Key Miễn Phí**: Bạn có thể tạo Google Gemini API Key hoàn toàn miễn phí tại **https://aistudio.google.com/apikey**\n` +
+        `2. **Gắn vào Vercel**: Vào Settings → **Environment Variables**, thêm biến \`GEMINI_API_KEY\` với giá trị mã khóa của bạn.\n\n` +
         `Sau khi thêm, tính năng luận giải AI và hỏi đáp tương tác sẽ hoạt động tức thì!`;
 
       const encoder = new TextEncoder();
@@ -157,86 +103,128 @@ export async function POST(req: Request) {
     }
 
     const systemPrompt = buildChartSummary(chart);
+    const encoder = new TextEncoder();
 
-    if (config.isAnthropic) {
-      // Anthropic Claude
-      const response = await fetch(config.url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': config.key,
-          'anthropic-version': '2023-06-01',
-        },
-        body: JSON.stringify({
-          model: config.model,
-          max_tokens: 2048,
-          system: systemPrompt,
-          stream: true,
-          messages: messages.map((m: any) => ({
-            role: m.role === 'assistant' ? 'assistant' : 'user',
-            content: m.content,
-          })),
-        }),
-      });
+    // 1. NATIVE GEMINI STREAMING (Ưu tiên số 1 nếu có GEMINI_API_KEY)
+    if (geminiKey) {
+      // Danh sách các model để thử, nếu một model bận (503) hoặc không hỗ trợ sẽ tự động thử model kế tiếp
+      const candidateModels = [
+        process.env.GEMINI_MODEL,
+        'gemini-2.0-flash',
+        'gemini-1.5-flash',
+        'gemini-2.0-flash-lite',
+        'gemini-flash-latest',
+        'gemini-2.5-flash',
+        'gemini-3.8-flash',
+      ].filter(Boolean) as string[];
 
-      if (!response.ok || !response.body) {
-        throw new Error(`Anthropic API Error: ${response.statusText}`);
+      // Chuẩn bị contents theo chuẩn Gemini REST API
+      const contents = [
+        ...messages.map((m: any) => ({
+          role: m.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: m.content }],
+        })),
+      ];
+      if (contents.length === 0) {
+        contents.push({ role: 'user', parts: [{ text: 'Xin hãy tổng quan luận giải lá số của tôi.' }] });
       }
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      const encoder = new TextEncoder();
+      let lastErrorText = '';
+      for (const model of candidateModels) {
+        try {
+          const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?key=${geminiKey}&alt=sse`;
+          const response = await fetch(geminiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              systemInstruction: { parts: [{ text: systemPrompt }] },
+              contents,
+              generationConfig: {
+                temperature: 0.7,
+                maxOutputTokens: 2048,
+              },
+            }),
+          });
 
-      const stream = new ReadableStream({
-        async start(controller) {
-          let buffer = '';
-          try {
-            while (true) {
-              const { done, value } = await reader.read();
-              if (done) break;
-              buffer += decoder.decode(value, { stream: true });
-              const lines = buffer.split('\n');
-              buffer = lines.pop() ?? '';
-              for (const line of lines) {
-                if (line.startsWith('data: ')) {
-                  const dataStr = line.slice(6).trim();
-                  if (!dataStr) continue;
-                  try {
-                    const parsed = JSON.parse(dataStr);
-                    if (parsed.type === 'content_block_delta' && parsed.delta?.text) {
-                      controller.enqueue(encoder.encode(`data: ${JSON.stringify({ delta: { text: parsed.delta.text } })}\n\n`));
-                    }
-                  } catch {}
-                }
-              }
-            }
-            controller.enqueue(encoder.encode(`data: [DONE]\n\n`));
-          } catch (err) {
-            controller.error(err);
-          } finally {
-            controller.close();
+          if (!response.ok || !response.body) {
+            lastErrorText = await response.text();
+            console.warn(`Gemini model ${model} failed (${response.status}):`, lastErrorText);
+            continue; // Thử model tiếp theo
           }
-        },
-      });
 
-      return new Response(stream, {
-        headers: {
-          'Content-Type': 'text/event-stream',
-          'Cache-Control': 'no-cache',
-          'Connection': 'keep-alive',
-        },
-      });
+          // Kết nối thành công, đọc SSE từ Gemini và map sang định dạng client
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+
+          const stream = new ReadableStream({
+            async start(controller) {
+              let buffer = '';
+              try {
+                while (true) {
+                  const { done, value } = await reader.read();
+                  if (done) break;
+                  buffer += decoder.decode(value, { stream: true });
+                  const lines = buffer.split('\n');
+                  buffer = lines.pop() ?? '';
+                  for (const line of lines) {
+                    const trimmed = line.trim();
+                    if (!trimmed.startsWith('data: ')) continue;
+                    const jsonStr = trimmed.slice(6).trim();
+                    if (!jsonStr) continue;
+                    try {
+                      const data = JSON.parse(jsonStr);
+                      const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+                      if (text) {
+                        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ delta: { text } })}\n\n`));
+                      }
+                    } catch {}
+                  }
+                }
+                controller.enqueue(encoder.encode(`data: [DONE]\n\n`));
+              } catch (err) {
+                controller.error(err);
+              } finally {
+                controller.close();
+              }
+            },
+          });
+
+          return new Response(stream, {
+            headers: {
+              'Content-Type': 'text/event-stream',
+              'Cache-Control': 'no-cache',
+              'Connection': 'keep-alive',
+            },
+          });
+        } catch (e: any) {
+          lastErrorText = e.message;
+        }
+      }
+
+      console.error('All Gemini models failed:', lastErrorText);
+      // Nếu tất cả model native đều gặp lỗi, fallback sang OpenAI format bên dưới
     }
 
-    // OpenAI / Gemini / DeepSeek / Compatible endpoint
-    const response = await fetch(config.url, {
+    // 2. OPENAI COMPATIBLE PROVIDERS (DeepSeek / OpenAI / Groq / OpenAI Compatible)
+    const apiUrl = deepseekKey
+      ? 'https://api.deepseek.com/v1/chat/completions'
+      : (process.env.OPENAI_BASE_URL
+        ? `${process.env.OPENAI_BASE_URL.replace(/\/+$/, '')}/chat/completions`
+        : (process.env.AI_BASE_URL
+          ? `${process.env.AI_BASE_URL.replace(/\/+$/, '')}/chat/completions`
+          : 'https://api.openai.com/v1/chat/completions'));
+
+    const apiKey = deepseekKey || openaiKey || aiKey;
+    const modelName = process.env.DEEPSEEK_MODEL || process.env.OPENAI_MODEL || process.env.AI_MODEL || (deepseekKey ? 'deepseek-chat' : 'gpt-4o-mini');
+
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${config.key}`,
+        'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: config.model,
+        model: modelName,
         stream: true,
         messages: [
           { role: 'system', content: systemPrompt },
@@ -250,13 +238,11 @@ export async function POST(req: Request) {
 
     if (!response.ok || !response.body) {
       const errText = await response.text();
-      console.error('LLM API Error:', response.status, errText);
-      throw new Error(`LLM API returned ${response.status}: ${errText}`);
+      throw new Error(`AI API returned ${response.status}: ${errText}`);
     }
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
-    const encoder = new TextEncoder();
 
     const stream = new ReadableStream({
       async start(controller) {
