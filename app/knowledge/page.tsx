@@ -6,6 +6,7 @@
 import Link from 'next/link';
 import { ALL_STARS, ALL_TOPICS, getKnowledge, STAR_BRIEF_SEO, STAR_TO_SLUG } from '@/lib/seo/knowledge';
 import { TOPIC_LABEL } from '@/lib/ziwei/db-analysis';
+import { translateStarName } from '@/lib/ziwei/vietnamese';
 
 export const metadata = {
   title: 'Kho Tri Thức Tử Vi Đẩu Số · 14 主星 × 13 宫位 · 倪海厦正宗体系',
