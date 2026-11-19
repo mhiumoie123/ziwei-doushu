@@ -187,9 +187,14 @@ ${question ? `Yêu cầu cụ thể từ người hỏi: "${question}"` : 'Hãy 
       console.error('All Gemini models failed for heming:', lastErrorText);
 
       if (!deepseekKey && !openaiKey && !aiKey) {
-        const retryNotice = `**【Máy Chủ Google Gemini Đang Bận】**\n\n` +
-          `Hệ thống Google Gemini đang trong khung giờ cao điểm chịu tải cao (503). ` +
-          `Dữ liệu hai lá số đã được bảo toàn, bạn vui lòng nhấn nút phân tích lại sau vài giây nhé!`;
+        const isQuota = lastErrorText.includes('RESOURCE_EXHAUSTED') || lastErrorText.includes('429');
+        const retryNotice = isQuota
+          ? `**【Hạn Mức Truy Vấn Tạm Thời (Rate Limit)】**\n\n` +
+            `Bạn vừa gửi nhiều yêu cầu phân tích trong thời gian ngắn. ` +
+            `Hạn mức sẽ tự phục hồi sau 1-2 phút, bạn vui lòng bấm phân tích lại sau ít phút nhé!`
+          : `**【Máy Chủ Google Gemini Đang Bận】**\n\n` +
+            `Hệ thống Google Gemini đang trong khung giờ cao điểm chịu tải cao. ` +
+            `Dữ liệu hai lá số đã được bảo toàn, bạn vui lòng nhấn nút phân tích lại sau vài giây nhé!`;
 
         const readable = new ReadableStream({
           start(controller) {

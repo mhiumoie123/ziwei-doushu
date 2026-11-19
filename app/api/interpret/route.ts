@@ -11,6 +11,38 @@ import {
 
 export const runtime = 'nodejs';
 
+/**
+ * Gemini's REST API rejects turns whose parts have empty text, and silently
+ * misbehaves on non-alternating roles. If a prior turn in the client's history
+ * ever ended up empty or duplicated (stream error, safety filter, etc.), every
+ * subsequent request would 400 forever without this sanitization.
+ */
+function sanitizeForGemini(messages: any[]): { role: string; parts: { text: string }[] }[] {
+  const cleaned = messages
+    .map((m: any) => ({
+      role: m.role === 'assistant' ? 'model' : 'user',
+      text: typeof m.content === 'string' ? m.content.trim() : '',
+    }))
+    .filter((m) => m.text.length > 0);
+
+  const merged: { role: string; text: string }[] = [];
+  for (const m of cleaned) {
+    const last = merged[merged.length - 1];
+    if (last && last.role === m.role) {
+      last.text += '\n' + m.text;
+    } else {
+      merged.push({ ...m });
+    }
+  }
+
+  // Gemini requires the first turn to be 'user'
+  while (merged.length > 0 && merged[0].role === 'model') {
+    merged.shift();
+  }
+
+  return merged.map((m) => ({ role: m.role, parts: [{ text: m.text }] }));
+}
+
 function buildChartSummary(chart: any): string {
   if (!chart) return 'Chưa có thông tin lá số.';
 
@@ -116,13 +148,9 @@ export async function POST(req: Request) {
         'gemini-flash-latest',
       ].filter(Boolean) as string[];
 
-      // Chuẩn bị contents theo chuẩn Gemini REST API
-      const contents = [
-        ...messages.map((m: any) => ({
-          role: m.role === 'assistant' ? 'model' : 'user',
-          parts: [{ text: m.content }],
-        })),
-      ];
+      // Chuẩn bị contents theo chuẩn Gemini REST API - loại bỏ turn rỗng/trùng role
+      // để tránh lỗi 400 lặp lại vĩnh viễn nếu lịch sử client bị hỏng
+      const contents = sanitizeForGemini(messages);
       if (contents.length === 0) {
         contents.push({ role: 'user', parts: [{ text: 'Xin hãy tổng quan luận giải lá số của tôi.' }] });
       }
@@ -212,9 +240,14 @@ export async function POST(req: Request) {
 
       // Nếu chỉ có Gemini Key mà không có OpenAI/DeepSeek key thì trả về thông báo thân thiện
       if (!deepseekKey && !openaiKey && !aiKey) {
-        const retryNotice = `**【Máy Chủ Google Gemini Đang Bận】**\n\n` +
-          `Hệ thống Google Gemini đang trong khung giờ cao điểm chịu tải cao (503). ` +
-          `Lá số của bạn đã được lưu trữ, bạn vui lòng nhấn nút **"Hỏi tiếp"** hoặc bấm lại chủ đề luận giải sau ít giây nhé!`;
+        const isQuota = lastErrorText.includes('RESOURCE_EXHAUSTED') || lastErrorText.includes('429');
+        const retryNotice = isQuota
+          ? `**【Hạn Mức Truy Vấn Tạm Thời (Rate Limit)】**\n\n` +
+            `Bạn vừa gửi nhiều câu hỏi trong thời gian ngắn nên tài khoản Google Gemini tạm thời chạm trần giới hạn tốc độ (khoảng 15 lượt/phút đối với bản miễn phí). ` +
+            `Hạn mức này sẽ tự hồi phục ngay lập tức sau 1-2 phút. Bạn vui lòng nghỉ tay một lát rồi nhấn nút **"Hỏi tiếp"** nhé!`
+          : `**【Máy Chủ Google Gemini Đang Bận】**\n\n` +
+            `Hệ thống Google Gemini đang trong khung giờ cao điểm chịu tải cao. ` +
+            `Lá số của bạn đã được lưu trữ an toàn, bạn vui lòng nhấn nút **"Hỏi tiếp"** hoặc bấm lại chủ đề luận giải sau ít giây nhé!`;
 
         const readable = new ReadableStream({
           start(controller) {

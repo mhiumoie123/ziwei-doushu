@@ -288,11 +288,15 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
   }, [selectedSiHua]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const streamResponse = async (apiMessages: { role: 'user' | 'assistant'; content: string }[]) => {
+    const abortCtrl = new AbortController();
+    const timeoutId = setTimeout(() => abortCtrl.abort(), 60000); // Tối đa 60s để tránh treo vĩnh viễn
+
     try {
       const res = await fetch('/api/interpret', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ chart, messages: apiMessages }),
+        signal: abortCtrl.signal,
       });
       if (res.status === 404) throw new Error('api-missing');
       if (!res.ok) throw new Error('Yêu cầu thất bại');
@@ -302,10 +306,11 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
       const decoder = new TextDecoder();
       let assistantText = '';
       let buffer = '';
+      let isDone = false;
 
       setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
 
-      while (true) {
+      while (!isDone) {
         const { done, value } = await reader.read();
         if (done) break;
         buffer += decoder.decode(value, { stream: true });
@@ -315,7 +320,11 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
           const trimmed = line.trim();
           if (!trimmed.startsWith('data: ')) continue;
           const data = trimmed.slice(6).trim();
-          if (data === '[DONE]') break;
+          if (data === '[DONE]') {
+            isDone = true;
+            try { reader.cancel(); } catch {}
+            break;
+          }
           try {
             const delta = JSON.parse(data).delta?.text ?? '';
             if (delta) {
@@ -329,10 +338,37 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
           } catch { /* skip */ }
         }
       }
+
+      // Nếu stream kết thúc mà không có nội dung (bị lọc an toàn, cắt giữa chừng...),
+      // thay thế placeholder trống bằng thông báo rõ ràng - không để content rỗng
+      // lưu lại trong lịch sử, vì Gemini sẽ từ chối các turn có parts text rỗng.
+      if (!assistantText.trim()) {
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[updated.length - 1] = {
+            role: 'assistant',
+            content: 'Phản hồi bị trống hoặc bị lọc nội dung, bạn vui lòng đặt câu hỏi khác hoặc bấm "Hỏi tiếp" nhé.',
+          };
+          return updated;
+        });
+      }
     } catch (e) {
       const missing = e instanceof Error && e.message === 'api-missing';
-      setMessages(prev => [...prev, { role: 'assistant', content: missing ? 'Bản mã nguồn mở không kèm sẵn AI API (/api/interpret). Phần an sao và lập lá số hoạt động 100% độc lập không cần API Key.' : 'Luận giải tạm thời gián đoạn do máy chủ bận, bạn vui lòng nhấn "Hỏi tiếp" để thử lại nhé.' }]);
+      const errText = missing
+        ? 'Bản mã nguồn mở không kèm sẵn AI API (/api/interpret). Phần an sao và lập lá số hoạt động 100% độc lập không cần API Key.'
+        : 'Luận giải tạm thời gián đoạn do máy chủ bận, bạn vui lòng nhấn "Hỏi tiếp" để thử lại nhé.';
+      // Nếu placeholder assistant rỗng đã được thêm trước khi lỗi xảy ra, thay thế nó
+      // thay vì thêm một message assistant mới - tránh 2 turn "model" liên tiếp trong
+      // lịch sử, điều mà Gemini API sẽ từ chối ở các câu hỏi tiếp theo.
+      setMessages(prev => {
+        const last = prev[prev.length - 1];
+        if (last?.role === 'assistant' && last.content === '') {
+          return [...prev.slice(0, -1), { role: 'assistant', content: errText }];
+        }
+        return [...prev, { role: 'assistant', content: errText }];
+      });
     } finally {
+      clearTimeout(timeoutId);
       setLoading(false);
       loadingRef.current = false;
     }

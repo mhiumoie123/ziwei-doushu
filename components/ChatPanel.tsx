@@ -55,10 +55,11 @@ export default function ChatPanel({ chart }: ChatPanelProps) {
       const decoder = new TextDecoder();
       let assistantText = '';
       let buffer = '';
+      let isDone = false;
 
       setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
 
-      while (true) {
+      while (!isDone) {
         const { done, value } = await reader.read();
         if (done) break;
         buffer += decoder.decode(value, { stream: true });
@@ -68,7 +69,11 @@ export default function ChatPanel({ chart }: ChatPanelProps) {
           const trimmed = line.trim();
           if (!trimmed.startsWith('data: ')) continue;
           const data = trimmed.slice(6).trim();
-          if (data === '[DONE]') break;
+          if (data === '[DONE]') {
+            isDone = true;
+            try { reader.cancel(); } catch {}
+            break;
+          }
           try {
             const parsed = JSON.parse(data);
             const delta = parsed.delta?.text ?? '';
