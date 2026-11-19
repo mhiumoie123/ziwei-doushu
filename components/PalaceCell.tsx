@@ -145,7 +145,8 @@ export default function PalaceCell({
         {majorStars.map((star) => {
           const overlaySiHua = overlayStarSiHua?.[star.name];
           const starDisplay = star.nameVi || translateStarName(star.name);
-          const brightVi = star.brightnessVi || translateBrightness(star.brightnessRaw);
+          const brightVi = translateBrightness(star.brightnessRaw) || star.brightnessVi;
+          const brightFull = translateBrightness(star.brightnessRaw, true) || brightVi;
           return (
             <div
               key={star.name}
@@ -159,7 +160,7 @@ export default function PalaceCell({
                 {starDisplay}
               </span>
               {brightVi && (
-                <span className="text-[9px] ml-0.5 opacity-75 font-serif" style={{ color: 'var(--t-faint)' }}>
+                <span className="text-[9px] ml-0.5 opacity-75 font-serif" style={{ color: 'var(--t-faint)' }} title={brightFull}>
                   ({brightVi})
                 </span>
               )}

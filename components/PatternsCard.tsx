@@ -2,7 +2,7 @@
 import { motion } from 'framer-motion';
 import type { ZiweiChart } from '@/lib/ziwei/types';
 import { detectPatterns } from '@/lib/ziwei/patterns';
-import { translatePalaceName, translatePatternName, translatePatternDesc, translateCondition } from '@/lib/ziwei/vietnamese';
+import { translatePalaceName, translatePatternName, translatePatternDesc, translateCondition, translatePatternSource } from '@/lib/ziwei/vietnamese';
 
 const LevelStyle = {
   excellent: { dot: 'bg-amber-400', label: 'text-amber-500', badge: 'text-amber-500 bg-amber-500/10 border-amber-500/25' },
@@ -24,7 +24,7 @@ export default function PatternsCard({ chart }: { chart: ZiweiChart }) {
     >
       <div className="text-[10px] tracking-widest mb-3 flex items-center gap-2" style={{ color: 'var(--t-faint)' }}>
         <span style={{ color: 'var(--t-gold)', opacity: 0.6 }}>◉</span>
-        Nhận Diện Cách Cục (Tiêu Chuẩn Cổ Thư)
+        Các cách cục trên lá số
         <span className="text-[9px] ml-auto" style={{ color: 'var(--t-faint)', opacity: 0.75 }}>{patterns.length} cách cục</span>
       </div>
       <div className="space-y-2">
@@ -51,7 +51,7 @@ export default function PatternsCard({ chart }: { chart: ZiweiChart }) {
               </div>
 
               <p className="text-[10px] leading-relaxed pl-3.5" style={{ color: 'var(--t-text2)' }}>
-                {p.description}
+                {translatePatternDesc(p.name, p.description)}
               </p>
 
               {p.conditions && (
@@ -65,7 +65,7 @@ export default function PatternsCard({ chart }: { chart: ZiweiChart }) {
                   )}
                   {p.conditions.bonus && p.conditions.bonus.length > 0 && (
                     <div className="text-[9px] leading-relaxed" style={{ color: 'var(--t-text2)', opacity: 0.85 }}>
-                      <span className="font-medium text-emerald-500">Cát hóa</span>
+                      <span className="font-medium text-emerald-500">Yếu tố trợ cách</span>
                       <span style={{ opacity: 0.6 }}> · </span>
                       {p.conditions.bonus.map(translateCondition).join(', ')}
                     </div>
@@ -82,7 +82,7 @@ export default function PatternsCard({ chart }: { chart: ZiweiChart }) {
 
               {p.source && (
                 <div className="text-[9px] mt-1.5 pl-3.5" style={{ color: 'var(--t-faint)', opacity: 0.5 }}>
-                  Xuất xứ · {translateCondition(p.source)}
+                  Tham chiếu · {translatePatternSource(p.source)}
                 </div>
               )}
             </motion.div>

@@ -200,6 +200,7 @@ export default function InsightPanel({ chart, selectedPalace, selectedSiHua }: I
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [activeTopic, setActiveTopic] = useState<string>('overview');
+  const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
   const messagesRef = useRef<Message[]>([]); // always-current copy for closures
   const loadingRef = useRef(false);
   const autoLoaded = useRef(false);
@@ -218,6 +219,14 @@ export default function InsightPanel({ chart, selectedPalace, selectedSiHua }: I
     }
   }, [messages]);
 
+  const handleResetChat = () => {
+    if (loadingRef.current) return;
+    setMessages([]);
+    setInput('');
+    setActiveTopic('overview');
+    sendMessage(TOPIC_PROMPTS.overview, true);
+  };
+
   // Auto-generate 命格总览 on mount
   useEffect(() => {
     if (autoLoaded.current) return;
@@ -231,24 +240,29 @@ export default function InsightPanel({ chart, selectedPalace, selectedSiHua }: I
     lastPalaceBranch.current = selectedPalace.branch;
 
     const majorStars = selectedPalace.stars.filter(s => s.type === 'major');
+    const palaceVi = selectedPalace.nameVi || translatePalaceName(selectedPalace.name);
     const starDesc = majorStars.length > 0
-      ? majorStars.map(s => `${s.name}${s.siHua ? '化' + s.siHua : ''}`).join('、')
-      : '空宫（借对宫）';
-    const role = PALACE_ROLES[selectedPalace.name] ?? '';
+      ? majorStars.map(s => {
+          const sName = s.nameVi || translateStarName(s.name);
+          const sihua = s.siHua ? ` [Hóa ${translateSiHua(s.siHua)}]` : '';
+          return `${sName}${sihua}`;
+        }).join(', ')
+      : 'Vô Chính Diệu (mượn chính tinh Đối Cung)';
+    const role = PALACE_ROLES[selectedPalace.name] ?? PALACE_ROLES[palaceVi] ?? '';
 
-    const prompt = `请重点分析【${selectedPalace.name}】（主管：${role}），该宫主星为${starDesc}，按以下结构输出：
+    const prompt = `Xin hãy tập trung phân tích chuyên sâu 【Cung ${palaceVi}】 (Chủ quản: ${role}), với các chính tinh tọa thủ: ${starDesc}, theo cấu trúc chuẩn xác sau:
 
-**【宫位定性】**
-${selectedPalace.name}在命盘中的意义，以及这种星曜配置的整体判断。
+**【Định Tính Cung Vị】**
+Ý nghĩa và vị thế của Cung ${palaceVi} trong tổng hòa bản mệnh lá số.
 
-**【主星解读】**
-主星在此宫的倪海厦体系解读，引用具体观点。
+**【Luận Giải Chính Tinh】**
+Đặc tính các sao tọa thủ theo tinh thần của danh sư Nghê Hải Hà («Thiên Kỷ»).
 
-**【三方四正联动】**
-三方四正宫位对此宫的影响。
+**【Tam Phương Tứ Chính Phối Hợp】**
+Tác động qua lại từ Đối Cung và hai cung vị Tam Hợp tới Cung ${palaceVi}.
 
-**【实际建议】**
-基于此宫的具体建议。`;
+**【Lời Khuyên Hành Động Thực Tế】**
+Sách lược ứng xử, tu thân và định hướng tối ưu nhất cho mệnh chủ.`;
 
     sendMessage(prompt, true);
   }, [selectedPalace]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -264,25 +278,28 @@ ${selectedPalace.name}在命盘中的意义，以及这种星曜配置的整体�
     const palaceOfStar = chart.palaces.find(p =>
       p.stars.some(s => s.name === selectedSiHua.starName)
     );
-    const palaceName = palaceOfStar?.name ?? '未知宫位';
-    const viewLabel = selectedSiHua.view === 'daxian' ? '大限' : '流年';
+    const palaceRawName = palaceOfStar?.name ?? '未知宫位';
+    const palaceVi = palaceOfStar?.nameVi || translatePalaceName(palaceRawName);
+    const starVi = translateStarName(selectedSiHua.starName);
+    const sihuaVi = translateSiHua(selectedSiHua.siHua);
+    const viewLabel = selectedSiHua.view === 'daxian' ? 'Đại Hạn' : 'Lưu Niên';
 
-    const prompt = `请分析【${viewLabel}${selectedSiHua.starName}化${selectedSiHua.siHua}】的飞化影响，按以下结构输出：
+    const prompt = `Xin hãy phân tích ảnh hưởng phi hóa của 【${viewLabel}: ${starVi} Hóa ${sihuaVi}】 theo cấu trúc sau:
 
-**【化${selectedSiHua.siHua}基本含义】**
-化${selectedSiHua.siHua}在倪海厦体系中的核心含义，以及${selectedSiHua.starName}化${selectedSiHua.siHua}的特殊含义。
+**【Ý Nghĩa Hóa ${sihuaVi}】**
+Khí hóa cốt lõi của Hóa ${sihuaVi} trong hệ thống Nghê Hải Hà, và cơ duyên khi sao ${starVi} đắc Hóa ${sihuaVi}.
 
-**【落宫影响】**
-${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，该宫主管的领域受到何种影响，倪师如何解读。
+**【Tác Động Nhập Cung】**
+Khi ${starVi} Hóa ${sihuaVi} nhập vào 【Cung ${palaceVi}】, phương diện cuộc sống mà cung vị này làm chủ sẽ đón nhận biến động gì.
 
-**【三方四正飞化路径】**
-化${selectedSiHua.siHua}入${palaceName}后，对其三方四正（对宫、两个三合宫）的联动影响。
+**【Đường Hướng Phi Hóa Tam Phương】**
+Sự lan tỏa và cộng hưởng năng lượng sang Đối Cung và hai cung Tam Hợp.
 
-**【当前运势影响】**
-在${viewLabel}时间维度下，此化${selectedSiHua.siHua}对命主近期运势的具体影响。
+**【Vận Trình ${viewLabel} Cận Kỳ】**
+Tác động cụ thể đến thời vận của mệnh chủ trong giai đoạn này.
 
-**【实际建议】**
-基于此四化的具体可操作建议。`;
+**【Lời Khuyên Ứng Biến】**
+Hành động thực tế để xu cát tị hung và nắm bắt cơ hội.`;
 
     sendMessage(prompt, true);
   }, [selectedSiHua]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -404,6 +421,30 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
   return (
     <div className="flex flex-col h-full rounded-xl overflow-hidden card-glass">
 
+      {/* ── Header Toolbar ── */}
+      <div className="flex items-center justify-between px-3 py-2 flex-shrink-0" style={{ borderBottom: '1px solid var(--t-border)' }}>
+        <div className="flex items-center gap-1.5">
+          <span className="text-xs font-semibold tracking-wider" style={{ color: 'var(--t-gold)' }}>LUẬN GIẢI MỆNH BÀN</span>
+          <span className="text-[10px] opacity-60" style={{ color: 'var(--t-faint)' }}>· Nghê Hải Hà</span>
+        </div>
+        <button
+          type="button"
+          onClick={handleResetChat}
+          disabled={loading}
+          title="Xóa lịch sử và tạo phiên hỏi mới"
+          className="text-[10px] px-2 py-0.5 rounded border transition-all cursor-pointer disabled:opacity-40"
+          style={{
+            borderColor: 'var(--t-border)',
+            color: 'var(--t-faint)',
+            background: 'rgba(255,255,255,0.03)',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.color = 'var(--t-gold)'; e.currentTarget.style.borderColor = 'rgba(212,168,67,0.3)'; }}
+          onMouseLeave={e => { e.currentTarget.style.color = 'var(--t-faint)'; e.currentTarget.style.borderColor = 'var(--t-border)'; }}
+        >
+          ↺ Đặt lại phiên
+        </button>
+      </div>
+
       {/* ── Topic buttons ── */}
       <div className="flex-shrink-0 px-2 pt-2.5 pb-2" style={{ borderBottom: '1px solid var(--t-border)' }}>
         <div className="grid grid-cols-6 gap-1">
@@ -474,11 +515,26 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
                 animate={{ opacity: 1, y: 0 }}
               >
                 <div
-                  className="text-[9px] tracking-widest mb-2 flex items-center gap-1.5"
+                  className="text-[9px] tracking-widest mb-2 flex items-center justify-between"
                   style={{ color: 'var(--t-faint)' }}
                 >
-                  <span style={{ color: 'var(--t-gold)', opacity: 0.4 }}>✦</span>
-                  LUẬN GIẢI MỆNH LÝ
+                  <div className="flex items-center gap-1.5">
+                    <span style={{ color: 'var(--t-gold)', opacity: 0.4 }}>✦</span>
+                    LUẬN GIẢI MỆNH LÝ
+                  </div>
+                  {msg.content && !loading && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(msg.content);
+                        setCopiedIdx(i);
+                        setTimeout(() => setCopiedIdx(null), 2000);
+                      }}
+                      className="text-[9px] hover:text-amber-400 transition-colors cursor-pointer px-1.5 py-0.5 rounded border border-transparent hover:border-amber-500/20"
+                    >
+                      {copiedIdx === i ? '✓ Đã chép' : '⎘ Sao chép'}
+                    </button>
+                  )}
                 </div>
                 <AiContent text={msg.content} streaming={loading && isLastMsg} />
               </motion.div>

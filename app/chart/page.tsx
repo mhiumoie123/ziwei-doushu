@@ -4,6 +4,7 @@ import BirthForm from '@/components/BirthForm';
 import ChartBoard from '@/components/ChartBoard';
 import InsightPanel from '@/components/InsightPanel';
 import TimeNav, { type TimeView } from '@/components/TimeNav';
+import ShareModal from '@/components/ShareModal';
 import { generateChart } from '@/lib/ziwei/algorithm';
 import type { BirthInfo, ZiweiChart, Palace } from '@/lib/ziwei/types';
 
@@ -16,6 +17,7 @@ export default function ChartPage() {
   const [selectedPalace, setSelectedPalace] = useState<Palace | null>(null);
   const [view, setView] = useState<TimeView>('mingpan');
   const [liunianYear, setLiunianYear] = useState(() => new Date().getFullYear());
+  const [shareOpen, setShareOpen] = useState(false);
 
   // ── Chưa lập lá số: Hiển thị form nhập thông tin ──
   if (!chart) {
@@ -32,21 +34,46 @@ export default function ChartPage() {
     );
   }
 
+  const birthData = {
+    year: String(chart.birthInfo.year),
+    month: String(chart.birthInfo.month),
+    day: String(chart.birthInfo.day),
+    hour: String(chart.birthInfo.hour ?? 0),
+    minute: '0',
+    gender: chart.birthInfo.gender,
+    city: chart.birthInfo.city,
+  };
+
   // ── Đã lập lá số: Hiển thị Bàn lá số + Luận giải ──
   return (
     <main style={{ maxWidth: 1280, margin: '0 auto', padding: '24px 16px' }}>
-      <button
-        type="button"
-        onClick={() => { setChart(null); setSelectedPalace(null); }}
-        style={{
-          marginBottom: 16, padding: '8px 18px', cursor: 'pointer',
-          border: '1px solid var(--t-border)', borderRadius: 10,
-          background: 'var(--t-surface)', color: 'var(--t-gold)', fontSize: 13,
-          fontWeight: 500,
-        }}
-      >
-        ← Lập Lại Lá Số
-      </button>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <button
+          type="button"
+          onClick={() => { setChart(null); setSelectedPalace(null); }}
+          style={{
+            padding: '8px 18px', cursor: 'pointer',
+            border: '1px solid var(--t-border)', borderRadius: 10,
+            background: 'var(--t-surface)', color: 'var(--t-gold)', fontSize: 13,
+            fontWeight: 500,
+          }}
+        >
+          ← Lập Lại Lá Số
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setShareOpen(true)}
+          style={{
+            padding: '8px 18px', cursor: 'pointer',
+            border: '1px solid rgba(212,168,67,0.35)', borderRadius: 10,
+            background: 'rgba(212,168,67,0.12)', color: 'var(--t-gold)', fontSize: 13,
+            fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6,
+          }}
+        >
+          <span>✦</span> Xuất Ảnh & Chia Sẻ Lá Số
+        </button>
+      </div>
 
       <TimeNav
         chart={chart}
@@ -65,6 +92,14 @@ export default function ChartPage() {
         <ChartBoard chart={chart} onPalaceSelect={setSelectedPalace} />
         <InsightPanel chart={chart} selectedPalace={selectedPalace} />
       </div>
+
+      <ShareModal
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        shareUrl={typeof window !== 'undefined' ? window.location.href : ''}
+        chart={chart}
+        birth={birthData}
+      />
     </main>
   );
 }

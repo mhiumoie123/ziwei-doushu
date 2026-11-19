@@ -2,7 +2,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Star } from '@/lib/ziwei/types';
 import { STAR_DESCRIPTIONS } from '@/lib/ziwei/constants';
-import { translateStarName, translatePalaceName } from '@/lib/ziwei/vietnamese';
+import { translateBrightness, translateStarName, translatePalaceName } from '@/lib/ziwei/vietnamese';
 
 interface StarDetailPanelProps {
   star: Star | null;
@@ -218,7 +218,7 @@ export default function StarDetailPanel({ star, palaceName, onClose }: StarDetai
                   `Ngũ Hành · ${desc.element}`,
                   `Đặc Tính · ${desc.nature}`,
                   ...(palaceName ? [`Cung Vị · ${palaceName}`] : []),
-                  ...(star.brightness ? [star.brightness === 'bright' ? 'Miếu Vượng' : star.brightness === 'dim' ? 'Hãm Địa' : 'Bình Hòa'] : []),
+                  ...(star.brightnessRaw ? [translateBrightness(star.brightnessRaw, true)] : []),
                 ].map(tag => (
                   <div key={tag} className="text-[10px] px-2 py-1 rounded-full"
                     style={{
