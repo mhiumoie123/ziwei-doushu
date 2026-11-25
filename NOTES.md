@@ -1,3 +1,8 @@
+### [2026-11-25 20:45] Push GitHub & Deploy bản nâng cấp độ chính xác lên Vercel Production
+- Đã làm: Commit `2f6b66d` (17 files) đẩy lên `origin/main` và chạy `vercel deploy --prod`.
+- Quyết định / lý do: Tris yêu cầu đưa bản nâng cấp 63 tỉnh thành VN (UTC+7 + NOAA), Nạp Âm, 3 vòng 12 sao, Tuần-Triệt, Lưu Tinh và AI fix lên web production.
+- Việc còn dở: Kiểm tra trạng thái deploy Vercel & phản hồi live URL.
+
 ### [2026-11-25 20:26] Crawl 63 tỉnh thành VN & nâng cấp độ chính xác toàn diện lá số
 - Đã làm: Crawl tọa độ WGS-84 63 tỉnh thành VN (UTC+7 / 105°E + NOAA EoT), tạo `vietnamese-accuracy.ts` (60 Nạp Âm, Mệnh-Cục, Vòng Tràng Sinh, Thái Tuế, Bác Sĩ, Tuần-Triệt, Tiểu Hạn & 9 Sao Lưu Niên), hiển thị trực tiếp lên lá số và bơm đầy đủ vào AI API (`/api/interpret`, `/api/heming`).
 - Quyết định / lý do: Vá triệt để lỗi lệch 1 tiếng giờ VN, lỗi AI sai giới tính/thiếu ngày sinh/cách cục, lỗi thiếu biến CSS `--t-*`, trùng 2 `TimeNav`, đứt nối `StarDetailPanel`/`PatternsCard`/share URL, và bug reset chat/SSE `/heming`.
