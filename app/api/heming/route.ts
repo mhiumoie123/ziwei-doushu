@@ -5,37 +5,82 @@ import {
   translateJu,
   translateBranch,
   translateSiHua,
+  translateBrightness,
 } from '@/lib/ziwei/vietnamese';
+import {
+  getNapAm,
+  getMenhCucRelation,
+  getTuanTriet,
+} from '@/lib/ziwei/vietnamese-accuracy';
 
 export const runtime = 'nodejs';
 
-function formatBriefChart(chart: any, sideName: string): string {
-  if (!chart) return `Chưa có thông tin ${sideName}`;
-  const name = chart.birth?.name || sideName;
-  const gender = chart.birth?.gender === 'female' ? 'Nữ' : 'Nam';
-  const solar = `${chart.birth?.year}-${chart.birth?.month}-${chart.birth?.day}`;
-  const ju = chart.wuxingJuNameVi || translateJu(chart.wuxingJuName) || chart.wuxingJuName || '';
-  const mingBranch = translateBranch(chart.mingGongBranch);
+function formatBriefChart(rawChart: any, sideName: string): string {
+  if (!rawChart) return `Chưa có thông tin ${sideName}`;
+  const birth = rawChart.birthInfo ?? rawChart.birth ?? {};
+  const lunar = rawChart.lunarInfo ?? rawChart.lunar ?? null;
 
-  const mingPalace = (chart.palaces || []).find((p: any) => p.branch === chart.mingGongBranch);
-  const phuThePalace = (chart.palaces || []).find((p: any) => p.name === '夫妻宫' || p.nameVi === 'Phu Thê');
+  const name = birth.name || sideName;
+  const gender: 'male' | 'female' = birth.gender === 'female' ? 'female' : 'male';
+  const genderVi = gender === 'female' ? 'Nữ' : 'Nam';
+  const orig = birth.origInput;
+  const solar = orig
+    ? `${orig.day}/${orig.month}/${orig.year} ${String(orig.clockHour).padStart(2, '0')}:${String(orig.clockMinute).padStart(2, '0')}`
+    : (birth.year ? `${birth.day}/${birth.month}/${birth.year}` : 'Không rõ');
+
+  const yearStem = typeof lunar?.yearStem === 'number' ? lunar.yearStem : 0;
+  const yearBranch = typeof lunar?.yearBranch === 'number' ? lunar.yearBranch : 0;
+  const napAm = getNapAm(yearStem, yearBranch);
+  const wuxingJu = typeof rawChart.wuxingJu === 'number' ? rawChart.wuxingJu : 3;
+  const menhCuc = getMenhCucRelation(napAm.element, wuxingJu);
+  const tuanTriet = getTuanTriet(yearStem, yearBranch);
+
+  const ju = rawChart.wuxingJuNameVi || translateJu(rawChart.wuxingJuName) || rawChart.wuxingJuName || '';
+  const mingBranch = translateBranch(rawChart.mingGongBranch);
+  const shenBranch = translateBranch(rawChart.shenGongBranch);
+
+  const palaces: any[] = Array.isArray(rawChart.palaces) ? rawChart.palaces : [];
+  const findPalace = (names: string[]) =>
+    palaces.find((p: any) => names.includes(p.name) || names.includes(p.nameVi));
+
+  const mingPalace = palaces.find((p: any) => p.branch === rawChart.mingGongBranch);
+  const phuThePalace = findPalace(['夫妻', '夫妻宫', 'Phu Thê']);
+  const phucDucPalace = findPalace(['福德', '福德宫', 'Phúc Đức']);
+  const taiBachPalace = findPalace(['财帛', '财帛宫', 'Tài Bạch']);
+  const quanLocPalace = findPalace(['官禄', '官禄宫', 'Quan Lộc']);
 
   const getStarsStr = (p: any) => {
     if (!p) return 'Không rõ';
-    return (p.stars || []).map((s: any) => {
+    const majors = (p.stars || []).filter((s: any) => s.type === 'major');
+    const others = (p.stars || []).filter((s: any) => s.type !== 'major');
+    const fmt = (s: any) => {
       const sName = s.nameVi || translateStarName(s.name);
-      const sihua = s.siHua ? ` [Hóa ${translateSiHua(s.siHua)}]` : '';
-      return `${sName}${sihua}`;
-    }).join(', ') || 'Vô Chính Diệu';
+      const bright = s.brightnessRaw ? ` (${translateBrightness(s.brightnessRaw)})` : '';
+      const sihua = s.siHua ? ` [${translateSiHua(s.siHua)}]` : '';
+      return `${sName}${bright}${sihua}`;
+    };
+    const majorTxt = majors.length > 0
+      ? majors.map(fmt).join(', ')
+      : `Vô Chính Diệu${Array.isArray(p.borrowedStars) && p.borrowedStars.length > 0 ? ` (Mượn: ${p.borrowedStars.map(translateStarName).join(', ')})` : ''}`;
+    const otherTxt = others.map(fmt).join(', ');
+    const ttFlags = [
+      tuanTriet.tuan.includes(p.branch) ? 'TUẦN' : '',
+      tuanTriet.triet.includes(p.branch) ? 'TRIỆT' : '',
+    ].filter(Boolean).join('/');
+    return `${majorTxt}${otherTxt ? ` | Phụ: ${otherTxt}` : ''}${ttFlags ? ` | ${ttFlags}` : ''}`;
   };
 
-  const mingStars = getStarsStr(mingPalace);
-  const phuTheStars = getStarsStr(phuThePalace);
+  const dx = rawChart.daXians?.[rawChart.currentDaXianIndex];
+  const dxStr = dx ? `${dx.startAge}–${dx.endAge} tuổi (Cung ${dx.palaceNameVi || translatePalaceName(dx.palaceName)})` : '';
 
-  return `【${sideName} - ${name} (${gender})】
-- Sinh ngày: ${solar} | Cục số: ${ju} | Mệnh tọa tại: ${mingBranch}
-- Sao Cung Mệnh: ${mingStars}
-- Sao Cung Phu Thê: ${phuTheStars}`;
+  return `【${sideName} - ${name} (${genderVi} · ${napAm.canChi})】
+- Dương lịch: ${solar} | Bản Mệnh Nạp Âm: ${napAm.napAm} (${napAm.element})
+- Cục số: ${ju} (${menhCuc.label}) | Mệnh tại ${mingBranch} · Thân tại ${shenBranch}${dxStr ? ` | Đại hạn: ${dxStr}` : ''}
+- Cung Mệnh: ${getStarsStr(mingPalace)}
+- Cung Phu Thê: ${getStarsStr(phuThePalace)}
+- Cung Phúc Đức: ${getStarsStr(phucDucPalace)}
+- Cung Tài Bạch: ${getStarsStr(taiBachPalace)}
+- Cung Quan Lộc: ${getStarsStr(quanLocPalace)}`;
 }
 
 export async function POST(req: Request) {
@@ -46,14 +91,10 @@ export async function POST(req: Request) {
     const deepseekKey = process.env.DEEPSEEK_API_KEY;
     const openaiKey = process.env.OPENAI_API_KEY;
     const aiKey = process.env.AI_API_KEY;
-    const anthropicKey = process.env.ANTHROPIC_API_KEY;
 
-    if (!geminiKey && !deepseekKey && !openaiKey && !aiKey && !anthropicKey) {
+    if (!geminiKey && !deepseekKey && !openaiKey && !aiKey) {
       const guideText = `**【Chưa Cấu Hình AI API Key Cho Tính Năng Hợp Mệnh】**\n\n` +
-        `Để kích hoạt phân tích Hợp Mệnh so đôi bằng AI:\n\n` +
-        `1. Lấy Google Gemini API Key miễn phí tại **https://aistudio.google.com/apikey**\n` +
-        `2. Thêm biến môi trường \`GEMINI_API_KEY\` vào Vercel (Project Settings → Environment Variables).\n` +
-        `3. Hệ thống sẽ tự động kích hoạt tính năng so khớp lá số và phân tích duyên phận!`;
+        `Thêm \`GEMINI_API_KEY=your_key\` vào file \`.env.local\` ở thư mục dự án rồi khởi động lại server để kích hoạt tính năng so đôi lá số bằng AI.`;
 
       const encoder = new TextEncoder();
       const readable = new ReadableStream({
@@ -76,8 +117,8 @@ export async function POST(req: Request) {
     const summaryA = formatBriefChart(chartA, 'Bên A');
     const summaryB = formatBriefChart(chartB, 'Bên B');
 
-    const systemPrompt = `BẠN LÀ CHUYÊN GIA HỢP MỆNH TỬ VI ĐẨU SỐ THEO HỆ THỐNG DANH SƯ NGHÊ HẢI HÀ.
-Dựa trên nguyên lý so đôi lá số (tương tác Cung Phu Thê, Cung Mệnh, ngũ hành nạp âm và phi hóa giữa hai bên), hãy phân tích tương quan giữa hai người.
+    const systemPrompt = `BẠN LÀ CHUYÊN GIA HỢP MỆNH TỬ VI ĐẨU SỐ THEO HỆ THỐNG DANH SƯ NGHÊ HẢI HÀ KẾT HỢP NAM PHÁI VIỆT NAM.
+Dựa chính xác trên dữ liệu hai lá số bên dưới (tương tác Cung Mệnh, Cung Phu Thê, Cung Phúc Đức, Ngũ hành Nạp Âm, Tứ Hóa, Tuần–Triệt và Đại Hạn của hai bên), hãy phân tích tương quan giữa hai người. Tuyệt đối không tự bịa sao không có trên lá số.
 
 Thông tin hai lá số:
 ${summaryA}
@@ -87,13 +128,12 @@ ${summaryB}
 ${question ? `Yêu cầu cụ thể từ người hỏi: "${question}"` : 'Hãy phân tích toàn diện về độ hòa hợp tình cảm, tính cách tương bổ, điểm cần lưu ý và lời khuyên ứng xử tối ưu.'}
 
 Định dạng trả lời:
-- Luận giải bằng Tiếng Việt chuẩn mực, thuật ngữ Hán - Việt Tử Vi chính tông.
-- Dùng các đề mục rõ ràng dạng **【Tiêu đề】** ở đầu dòng (ví dụ: **【Tổng Quan Duyên Phận】**, **【Tương Tác Cung Mệnh & Tính Cách】**, **【Phối Ngẫu & Cung Phu Thê】**, **【Điểm Cần Thấu Hiểu & Lưu Ý】**, **【Lời Khuyên Hạnh Phúc】**).
-- Đưa ra lời khuyên chân thành, xây dựng, tích cực và hướng thượng.`;
+- Luận giải bằng Tiếng Việt chuẩn mực, thuật ngữ Hán–Việt Tử Vi chính tông.
+- Dùng các đề mục rõ ràng dạng **【Tiêu đề】** ở đầu dòng.
+- Dẫn chứng cụ thể các sao & cung vị của Bên A và Bên B rồi đưa ra lời khuyên thực tế, xây dựng.`;
 
     const encoder = new TextEncoder();
 
-    // 1. NATIVE GEMINI STREAMING (Ưu tiên nếu có GEMINI_API_KEY)
     if (geminiKey) {
       const candidateModels = [
         process.env.GEMINI_MODEL,
@@ -110,16 +150,19 @@ ${question ? `Yêu cầu cụ thể từ người hỏi: "${question}"` : 'Hãy 
       for (const model of candidateModels) {
         for (let attempt = 0; attempt < 2; attempt++) {
           try {
-            const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?key=${geminiKey}&alt=sse`;
+            const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse`;
             const response = await fetch(geminiUrl, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: {
+                'Content-Type': 'application/json',
+                'x-goog-api-key': geminiKey,
+              },
               body: JSON.stringify({
                 systemInstruction: { parts: [{ text: systemPrompt }] },
                 contents,
                 generationConfig: {
-                  temperature: 0.7,
-                  maxOutputTokens: 2048,
+                  temperature: 0.65,
+                  maxOutputTokens: 4096,
                 },
               }),
             });
@@ -190,11 +233,9 @@ ${question ? `Yêu cầu cụ thể từ người hỏi: "${question}"` : 'Hãy 
         const isQuota = lastErrorText.includes('RESOURCE_EXHAUSTED') || lastErrorText.includes('429');
         const retryNotice = isQuota
           ? `**【Hạn Mức Truy Vấn Tạm Thời (Rate Limit)】**\n\n` +
-            `Bạn vừa gửi nhiều yêu cầu phân tích trong thời gian ngắn. ` +
-            `Hạn mức sẽ tự phục hồi sau 1-2 phút, bạn vui lòng bấm phân tích lại sau ít phút nhé!`
+            `Bạn vừa gửi nhiều yêu cầu phân tích trong thời gian ngắn. Hạn mức sẽ tự phục hồi sau 1-2 phút.`
           : `**【Máy Chủ Google Gemini Đang Bận】**\n\n` +
-            `Hệ thống Google Gemini đang trong khung giờ cao điểm chịu tải cao. ` +
-            `Dữ liệu hai lá số đã được bảo toàn, bạn vui lòng nhấn nút phân tích lại sau vài giây nhé!`;
+            `Hệ thống Google Gemini đang chịu tải cao. Bạn vui lòng bấm phân tích lại sau vài giây nhé!`;
 
         const readable = new ReadableStream({
           start(controller) {
@@ -214,7 +255,7 @@ ${question ? `Yêu cầu cụ thể từ người hỏi: "${question}"` : 'Hãy 
       }
     }
 
-    // 2. OPENAI COMPATIBLE PROVIDERS (DeepSeek / OpenAI / Compatible)
+    // 2. OPENAI COMPATIBLE PROVIDERS
     const apiUrl = deepseekKey
       ? 'https://api.deepseek.com/v1/chat/completions'
       : (process.env.OPENAI_BASE_URL
@@ -253,8 +294,9 @@ ${question ? `Yêu cầu cụ thể từ người hỏi: "${question}"` : 'Hãy 
     const stream = new ReadableStream({
       async start(controller) {
         let buffer = '';
+        let sentDone = false;
         try {
-          while (true) {
+          while (!sentDone) {
             const { done, value } = await reader.read();
             if (done) break;
             buffer += decoder.decode(value, { stream: true });
@@ -265,7 +307,8 @@ ${question ? `Yêu cầu cụ thể từ người hỏi: "${question}"` : 'Hãy 
               if (!trimmed.startsWith('data: ')) continue;
               const dataStr = trimmed.slice(6).trim();
               if (dataStr === '[DONE]') {
-                controller.enqueue(encoder.encode(`data: [DONE]\n\n`));
+                sentDone = true;
+                try { reader.cancel(); } catch {}
                 break;
               }
               try {

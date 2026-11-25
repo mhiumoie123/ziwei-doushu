@@ -108,36 +108,48 @@ export default function HemingPage() {
       setChartA(cA);
       setChartB(cB);
 
-      const res = await fetch('/api/heming', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chartA: cA, chartB: cB, question: q ?? undefined }),
-      });
-      if (res.status === 404) { setApiMissing(true); throw new Error('api-missing'); }
-      if (!res.ok || !res.body) throw new Error();
+      const abortCtrl = new AbortController();
+      const timeoutId = setTimeout(() => abortCtrl.abort(), 60000);
+      try {
+        const res = await fetch('/api/heming', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chartA: cA, chartB: cB, question: q ?? undefined }),
+          signal: abortCtrl.signal,
+        });
+        if (res.status === 404) { setApiMissing(true); throw new Error('api-missing'); }
+        if (!res.ok || !res.body) throw new Error();
 
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let text = '';
-      let pendingLine = '';
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let text = '';
+        let pendingLine = '';
+        let isDone = false;
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        pendingLine += decoder.decode(value, { stream: true });
-        const lines = pendingLine.split('\n');
-        pendingLine = lines.pop() ?? '';
-        for (const rawLine of lines) {
-          const line = rawLine.endsWith('\r') ? rawLine.slice(0, -1) : rawLine;
-          if (!line.startsWith('data: ')) continue;
-          const data = line.slice(6);
-          if (data === '[DONE]') break;
-          try {
-            const delta = JSON.parse(data).delta?.text ?? '';
-            text += delta;
-            setAnalysis(text);
-          } catch { /* skip */ }
+        while (!isDone) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          pendingLine += decoder.decode(value, { stream: true });
+          const lines = pendingLine.split('\n');
+          pendingLine = lines.pop() ?? '';
+          for (const rawLine of lines) {
+            const line = rawLine.endsWith('\r') ? rawLine.slice(0, -1) : rawLine;
+            if (!line.startsWith('data: ')) continue;
+            const data = line.slice(6).trim();
+            if (data === '[DONE]') {
+              isDone = true;
+              try { reader.cancel(); } catch {}
+              break;
+            }
+            try {
+              const delta = JSON.parse(data).delta?.text ?? '';
+              text += delta;
+              setAnalysis(text);
+            } catch { /* skip */ }
+          }
         }
+      } finally {
+        clearTimeout(timeoutId);
       }
       // scroll to analysis
       setTimeout(() => analysisRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);

@@ -1,3 +1,13 @@
+### [2026-11-25 20:26] Crawl 63 tỉnh thành VN & nâng cấp độ chính xác toàn diện lá số
+- Đã làm: Crawl tọa độ WGS-84 63 tỉnh thành VN (UTC+7 / 105°E + NOAA EoT), tạo `vietnamese-accuracy.ts` (60 Nạp Âm, Mệnh-Cục, Vòng Tràng Sinh, Thái Tuế, Bác Sĩ, Tuần-Triệt, Tiểu Hạn & 9 Sao Lưu Niên), hiển thị trực tiếp lên lá số và bơm đầy đủ vào AI API (`/api/interpret`, `/api/heming`).
+- Quyết định / lý do: Vá triệt để lỗi lệch 1 tiếng giờ VN, lỗi AI sai giới tính/thiếu ngày sinh/cách cục, lỗi thiếu biến CSS `--t-*`, trùng 2 `TimeNav`, đứt nối `StarDetailPanel`/`PatternsCard`/share URL, và bug reset chat/SSE `/heming`.
+- Việc còn dở: Xác nhận `next build` & hoàn tất chạy test regression.
+
+### [2026-11-25 20:12] Review toàn diện mã nguồn ziwei-doushu tìm điểm tối ưu
+- Đã làm: Rà soát toàn bộ `app/`, `components/`, `lib/`, `package.json` và `globals.css`.
+- Quyết định / lý do: Phát hiện 5 lỗi nghiêm trọng (lệch UTC+7/UTC+8 giờ VN, API AI đọc sai field `birthInfo`/`lunarInfo`, thiếu biến CSS `--t-*`, trùng 2 `TimeNav` + đứt nối `StarDetailPanel`/share URL, bug reset chat & SSE `/heming`) cùng các điểm tối ưu hiệu năng/bundle.
+- Việc còn dở: Báo cáo chi tiết cho Tris chọn hạng mục triển khai sửa & tối ưu.
+
 ### [2026-11-19 22:25] Nâng cấp Việt hóa chuẩn Hán-Việt & tính năng web Tử Vi
 - Đã làm: Việt hóa toàn bộ prompt cung vị/Tứ Hóa chuẩn Nghê Hải Hà, thêm nút Đặt lại phiên, Sao chép luận giải, Xuất ảnh chia sẻ PNG.
 - Quyết định / lý do: Thay thế prompt tiếng Trung còn sót, hoàn thiện tính năng tương tác chuyên nghiệp cho lá số.

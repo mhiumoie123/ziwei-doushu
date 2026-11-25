@@ -56,6 +56,16 @@
   --r-lg:  16px;
   --r-xl:  24px;
   --r-pill:999px;
+
+  /* Alias Token cho ChartBoard / PalaceCell / InsightPanel / PatternsCard */
+  --t-bg:      var(--bg-0);
+  --t-surface: var(--bg-1);
+  --t-card:    var(--bg-card);
+  --t-border:  var(--bdr-med);
+  --t-gold:    var(--ac);
+  --t-text:    var(--tx-0);
+  --t-text2:   var(--tx-2);
+  --t-faint:   var(--tx-3);
 }
 
 /* ─── 暗色模式 Token 覆盖 ──────────────────────────────── */
@@ -88,6 +98,27 @@
 
   --bg-card: rgba(255,255,255,0.04);
   --bg-page: #020810;
+
+  --t-bg:      #060d1c;
+  --t-surface: rgba(12,20,38,0.85);
+  --t-card:    rgba(255,255,255,0.04);
+  --t-border:  rgba(255,255,255,0.10);
+  --t-gold:    #d4a843;
+  --t-text:    #e8eef6;
+  --t-text2:   #b0c0da;
+  --t-faint:   #7c8ea8;
+}
+
+.card-glass {
+  background: var(--t-surface);
+  border: 1px solid var(--t-border);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.card-inner {
+  background: var(--t-card);
+  border: 1px solid var(--t-border);
 }
 
 /* ─── 全局基础 ───────────────────────────────────────────── */

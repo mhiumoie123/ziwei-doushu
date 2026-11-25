@@ -2,7 +2,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Star } from '@/lib/ziwei/types';
 import { STAR_DESCRIPTIONS } from '@/lib/ziwei/constants';
-import { translateBrightness, translateStarName, translatePalaceName } from '@/lib/ziwei/vietnamese';
+import { translateBrightness, translateStarName, translatePalaceName, translateSiHua } from '@/lib/ziwei/vietnamese';
 
 interface StarDetailPanelProps {
   star: Star | null;
@@ -203,7 +203,7 @@ export default function StarDetailPanel({ star, palaceName, onClose }: StarDetai
               )}
               {star.siHua && (
                 <span className={`text-[10px] px-1.5 py-0.5 rounded-full border font-medium ${siHuaColors[star.siHua] || ''}`}>
-                  化{star.siHua}
+                  {translateSiHua(star.siHua)}
                 </span>
               )}
             </div>
@@ -211,19 +211,19 @@ export default function StarDetailPanel({ star, palaceName, onClose }: StarDetai
           </div>
 
           <div className="p-4 space-y-4 overflow-y-auto max-h-[560px]">
-            {/* 基本信息 */}
+            {/* Thông tin cơ bản */}
             {desc && (
               <div className="flex flex-wrap gap-1.5">
                 {[
-                  `Ngũ Hành · ${desc.element}`,
-                  `Đặc Tính · ${desc.nature}`,
-                  ...(palaceName ? [`Cung Vị · ${palaceName}`] : []),
+                  `Ngũ Hành · ${desc.elementVi ?? desc.element}`,
+                  `Đặc Tính · ${desc.natureVi ?? desc.nature}`,
+                  ...(palaceName ? [`Cung Vị · ${translatePalaceName(palaceName)}`] : []),
                   ...(star.brightnessRaw ? [translateBrightness(star.brightnessRaw, true)] : []),
                 ].map(tag => (
                   <div key={tag} className="text-[10px] px-2 py-1 rounded-full"
                     style={{
                       border: '1px solid var(--t-border)',
-                      color: tag.includes('Miếu Vượng') ? '#eab308' : tag.includes('Hãm Địa') ? '#ef4444' : 'var(--t-text2)',
+                      color: tag.includes('Miếu') || tag.includes('Vượng') ? '#eab308' : tag.includes('Hãm') ? '#ef4444' : 'var(--t-text2)',
                     }}>
                     {tag}
                   </div>
@@ -231,12 +231,12 @@ export default function StarDetailPanel({ star, palaceName, onClose }: StarDetai
               </div>
             )}
 
-            {/* 关键词 */}
+            {/* Từ khóa */}
             {desc && (
               <div>
                 <div className="text-[10px] tracking-widest mb-1.5" style={{ color: 'var(--t-faint)' }}>Đặc Tính Tinh Diệu</div>
                 <div className="flex flex-wrap gap-1.5">
-                  {desc.keywords.split('·').map(k => (
+                  {(desc.keywordsVi ?? desc.keywords).split('·').map(k => (
                     <span key={k} className="text-[11px] px-2 py-0.5 rounded-full"
                       style={{ color: 'var(--t-gold)', border: '1px solid rgba(212,168,67,0.2)', background: 'rgba(212,168,67,0.06)' }}>
                       {k.trim()}
@@ -250,7 +250,7 @@ export default function StarDetailPanel({ star, palaceName, onClose }: StarDetai
             {detail && (
               <div className="rounded-xl p-3" style={{ background: 'rgba(212,168,67,0.04)', border: '1px solid rgba(212,168,67,0.12)' }}>
                 <div className="text-[10px] tracking-widest mb-1.5 flex items-center gap-1" style={{ color: 'var(--t-gold)', opacity: 0.7 }}>
-                  古书原文
+                  TRÍCH DẪN CỔ THƯ
                 </div>
                 <p className="text-[11px] leading-relaxed italic" style={{ color: 'var(--t-gold)', opacity: 0.8 }}>{detail.classical}</p>
               </div>

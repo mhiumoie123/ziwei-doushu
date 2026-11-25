@@ -221,6 +221,7 @@ export default function InsightPanel({ chart, selectedPalace, selectedSiHua }: I
 
   const handleResetChat = () => {
     if (loadingRef.current) return;
+    messagesRef.current = [];
     setMessages([]);
     setInput('');
     setActiveTopic('overview');

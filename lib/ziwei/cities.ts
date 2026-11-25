@@ -1,41 +1,127 @@
 export interface CityInfo {
   name: string;
-  longitude: number; // degrees East
+  longitude: number; // degrees East (WGS-84)
 }
 
 export interface ProvinceInfo {
   name: string;
+  /** Múi giờ chuẩn của vùng theo phút (Việt Nam = 420 / UTC+7 / 105°E; Trung Quốc = 480 / UTC+8 / 120°E) */
+  utcOffsetMinutes?: number;
   cities: CityInfo[];
 }
 
-// ★ 2026-10-07 用户反馈「出生地点还不够全」→ 补全全国区县（直辖市以外 2724 个，挂在各地级市下）。
-//   区县不放进本表：本表经 BirthForm → LocationPicker 在 /chart、/heming 首屏静态依赖图上，
-//   区县表与拼音表在 lib/ziwei/counties.generated.ts、lib/i18n/county-pinyin.generated.ts，
-//   打开地点选择框时才动态加载（lib/ziwei/county-data.ts）。区县选中后城市字段存成「地级市·区县」，
-//   见 lib/ziwei/county-label.ts。省直辖县级单位（仙桃、海南各市县、新疆兵团各市）仍是本表的市一级。
+/** Lấy múi giờ chuẩn (phút) theo tên vùng/tỉnh. Mặc định 480 (UTC+8) cho dữ liệu cũ; Việt Nam là 420 (UTC+7). */
+export function getProvinceUtcOffsetMinutes(provinceName?: string): number {
+  if (!provinceName) return 480;
+  const found = PROVINCES.find(p => p.name === provinceName);
+  return found?.utcOffsetMinutes ?? 480;
+}
+
 export const PROVINCES: ProvinceInfo[] = [
-  // ─── Việt Nam ───────────────────────────────────────────
+  // ─── Việt Nam (63 Tỉnh / Thành phố chuẩn WGS-84, múi giờ UTC+7 = 105°E) ───
   {
-    name: 'Việt Nam (Các tỉnh thành chính)',
+    name: 'Việt Nam · Đồng bằng sông Hồng',
+    utcOffsetMinutes: 420,
     cities: [
       { name: 'Hà Nội', longitude: 105.85 },
-      { name: 'TP. Hồ Chí Minh', longitude: 106.66 },
-      { name: 'Đà Nẵng', longitude: 108.22 },
       { name: 'Hải Phòng', longitude: 106.68 },
-      { name: 'Cần Thơ', longitude: 105.78 },
-      { name: 'Huế', longitude: 107.59 },
-      { name: 'Nha Trang (Khánh Hòa)', longitude: 109.19 },
-      { name: 'Vũng Tàu', longitude: 107.08 },
-      { name: 'Quy Nhơn (Bình Định)', longitude: 109.23 },
-      { name: 'Buôn Ma Thuột (Đắk Lắk)', longitude: 108.05 },
-      { name: 'Đà Lạt (Lâm Đồng)', longitude: 108.44 },
-      { name: 'Biên Hòa (Đồng Nai)', longitude: 106.84 },
-      { name: 'Thủ Dầu Một (Bình Dương)', longitude: 106.65 },
-      { name: 'Vinh (Nghệ An)', longitude: 105.68 },
-      { name: 'Thanh Hóa', longitude: 105.78 },
+      { name: 'Bắc Ninh', longitude: 106.08 },
+      { name: 'Hà Nam', longitude: 105.92 },
+      { name: 'Hải Dương', longitude: 106.33 },
+      { name: 'Hưng Yên', longitude: 106.05 },
       { name: 'Nam Định', longitude: 106.17 },
+      { name: 'Ninh Bình', longitude: 105.97 },
+      { name: 'Thái Bình', longitude: 106.34 },
+      { name: 'Vĩnh Phúc', longitude: 105.60 },
+      { name: 'Quảng Ninh', longitude: 107.07 },
+    ],
+  },
+  {
+    name: 'Việt Nam · Đông Bắc & Tây Bắc',
+    utcOffsetMinutes: 420,
+    cities: [
+      { name: 'Bắc Giang', longitude: 106.20 },
+      { name: 'Bắc Kạn', longitude: 105.83 },
+      { name: 'Cao Bằng', longitude: 106.26 },
+      { name: 'Hà Giang', longitude: 104.98 },
+      { name: 'Lạng Sơn', longitude: 106.76 },
+      { name: 'Phú Thọ', longitude: 105.40 },
       { name: 'Thái Nguyên', longitude: 105.84 },
-      { name: 'Hạ Long (Quảng Ninh)', longitude: 107.07 },
+      { name: 'Tuyên Quang', longitude: 105.21 },
+      { name: 'Lào Cai', longitude: 103.97 },
+      { name: 'Yên Bái', longitude: 104.90 },
+      { name: 'Điện Biên', longitude: 103.02 },
+      { name: 'Hòa Bình', longitude: 105.34 },
+      { name: 'Lai Châu', longitude: 103.47 },
+      { name: 'Sơn La', longitude: 103.91 },
+    ],
+  },
+  {
+    name: 'Việt Nam · Bắc Trung Bộ',
+    utcOffsetMinutes: 420,
+    cities: [
+      { name: 'Thanh Hóa', longitude: 105.78 },
+      { name: 'Nghệ An (Vinh)', longitude: 105.69 },
+      { name: 'Hà Tĩnh', longitude: 105.90 },
+      { name: 'Quảng Bình (Đồng Hới)', longitude: 106.62 },
+      { name: 'Quảng Trị (Đông Hà)', longitude: 107.10 },
+      { name: 'Thừa Thiên Huế', longitude: 107.59 },
+    ],
+  },
+  {
+    name: 'Việt Nam · Duyên hải Nam Trung Bộ',
+    utcOffsetMinutes: 420,
+    cities: [
+      { name: 'Đà Nẵng', longitude: 108.22 },
+      { name: 'Quảng Nam (Tam Kỳ)', longitude: 108.48 },
+      { name: 'Quảng Ngãi', longitude: 108.80 },
+      { name: 'Bình Định (Quy Nhơn)', longitude: 109.23 },
+      { name: 'Phú Yên (Tuy Hòa)', longitude: 109.30 },
+      { name: 'Khánh Hòa (Nha Trang)', longitude: 109.19 },
+      { name: 'Ninh Thuận (Phan Rang)', longitude: 108.99 },
+      { name: 'Bình Thuận (Phan Thiết)', longitude: 108.10 },
+    ],
+  },
+  {
+    name: 'Việt Nam · Tây Nguyên',
+    utcOffsetMinutes: 420,
+    cities: [
+      { name: 'Kon Tum', longitude: 108.00 },
+      { name: 'Gia Lai (Pleiku)', longitude: 108.00 },
+      { name: 'Đắk Lắk (Buôn Ma Thuột)', longitude: 108.05 },
+      { name: 'Đắk Nông (Gia Nghĩa)', longitude: 107.69 },
+      { name: 'Lâm Đồng (Đà Lạt)', longitude: 108.44 },
+    ],
+  },
+  {
+    name: 'Việt Nam · Đông Nam Bộ',
+    utcOffsetMinutes: 420,
+    cities: [
+      { name: 'TP. Hồ Chí Minh', longitude: 106.70 },
+      { name: 'Bà Rịa – Vũng Tàu', longitude: 107.08 },
+      { name: 'Bình Dương (Thủ Dầu Một)', longitude: 106.65 },
+      { name: 'Bình Phước (Đồng Xoài)', longitude: 106.90 },
+      { name: 'Đồng Nai (Biên Hòa)', longitude: 106.84 },
+      { name: 'Tây Ninh', longitude: 106.10 },
+    ],
+  },
+  {
+    name: 'Việt Nam · Đồng bằng sông Cửu Long',
+    utcOffsetMinutes: 420,
+    cities: [
+      { name: 'Cần Thơ', longitude: 105.78 },
+      { name: 'An Giang (Long Xuyên)', longitude: 105.43 },
+      { name: 'Bạc Liêu', longitude: 105.72 },
+      { name: 'Bến Tre', longitude: 106.38 },
+      { name: 'Cà Mau', longitude: 105.15 },
+      { name: 'Đồng Tháp (Cao Lãnh)', longitude: 105.63 },
+      { name: 'Hậu Giang (Vị Thanh)', longitude: 105.47 },
+      { name: 'Kiên Giang (Rạch Giá)', longitude: 105.08 },
+      { name: 'Long An (Tân An)', longitude: 106.41 },
+      { name: 'Sóc Trăng', longitude: 105.97 },
+      { name: 'Tiền Giang (Mỹ Tho)', longitude: 106.36 },
+      { name: 'Trà Vinh', longitude: 106.34 },
+      { name: 'Vĩnh Long', longitude: 105.97 },
     ],
   },
   // ─── 直辖市 ───────────────────────────────────────────
